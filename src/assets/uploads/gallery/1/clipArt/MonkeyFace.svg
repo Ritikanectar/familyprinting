@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg5825" viewBox="0 0 482.5 431.67" version="1.1">
+  <g id="layer1" transform="translate(-152.5 -86.667)">
+    <g id="g6873">
+      <path id="path5837-9" transform="matrix(.44670 0 0 .5 133.14 -40)" fill="#502d16" d="m371.67 411.67c0 77.32-73.5 140-164.17 140-90.667 0-164.17-62.68-164.17-140s73.5-140 164.17-140c90.667 0 164.17 62.68 164.17 140z"/>
+      <path id="path5837-9-3" transform="matrix(.30457 0 0 .35714 166.8 29.643)" fill="#a05a2c" d="m371.67 411.67c0 77.32-73.5 140-164.17 140-90.667 0-164.17-62.68-164.17-140s73.5-140 164.17-140c90.667 0 164.17 62.68 164.17 140z"/>
+      <path id="path5837-9-38" transform="matrix(.44670 0 0 .5 468.98 -40.833)" fill="#502d16" d="m371.67 411.67c0 77.32-73.5 140-164.17 140-90.667 0-164.17-62.68-164.17-140s73.5-140 164.17-140c90.667 0 164.17 62.68 164.17 140z"/>
+      <path id="path5837-9-3-4" transform="matrix(.30457 0 0 .35714 502.64 28.81)" fill="#a05a2c" d="m371.67 411.67c0 77.32-73.5 140-164.17 140-90.667 0-164.17-62.68-164.17-140s73.5-140 164.17-140c90.667 0 164.17 62.68 164.17 140z"/>
+      <path id="path5835" d="m395 86.667c253.93 20.283 237.18 299.48-3.33 390-264.01-114.78-228.45-380.21 3.33-390z" fill="#502d16"/>
+      <path id="path5952" d="m395 150.33c213.03-49.75 150.12 189.24 5 206.67-140.18-1.1-245.73-258.95-5-206.67z" fill="#d38d5f"/>
+      <path id="path6770-6" transform="matrix(.99459 .10389 -.10389 .99459 403.76 -76.714)" fill="#241f1c" d="m101.67 289.17c0 20.711-13.431 37.5-30 37.5s-30-16.789-30-37.5 13.431-37.5 30-37.5 30 16.789 30 37.5z"/>
+      <path id="path6770" transform="matrix(.99459 -.10389 .10389 .99459 232.01 -60.99)" fill="#241f1c" d="m101.67 289.17c0 20.711-13.431 37.5-30 37.5s-30-16.789-30-37.5 13.431-37.5 30-37.5 30 16.789 30 37.5z"/>
+      <path id="path5837" transform="matrix(.91878 0 0 1.006 204.85 -36.617)" fill="#d38d5f" d="m371.67 411.67c0 77.32-73.5 140-164.17 140-90.667 0-164.17-62.68-164.17-140s73.5-140 164.17-140c90.667 0 164.17 62.68 164.17 140z"/>
+      <path id="path6722" d="m278.19 459.51c78.43 16.807 156.86 23.155 235.29-3.6585-67.011 28.424-141.77 38.391-235.29 3.6585z" fill="#241f1c"/>
+      <path id="path6722-5" d="m391.16 275.66c-3.6191 56.24-4.8783 112.46 1.345 168.61-6.5614-47.966-8.9754-101.52-1.345-168.61z" fill="#241f1c"/>
+      <path id="path6746" transform="translate(235,-30)" fill="#241f1c" d="m138.33 327.5c0 8.7445-2.6117 15.833-5.8333 15.833-3.2217 0-5.8333-7.0888-5.8333-15.833 0-8.7445 2.6117-15.833 5.8333-15.833 3.2217 0 5.8333 7.0888 5.8333 15.833z"/>
+      <path id="path6746-0" transform="translate(279.5 -30.167)" fill="#241f1c" d="m138.33 327.5c0 8.7445-2.6117 15.833-5.8333 15.833-3.2217 0-5.8333-7.0888-5.8333-15.833 0-8.7445 2.6117-15.833 5.8333-15.833 3.2217 0 5.8333 7.0888 5.8333 15.833z"/>
+      <path id="path6830" d="m470.15 207.84c-1.4115 20.875-12.56 28.772-27.475 31.648 9.1582 1.0754 14.247 11.177 23.405-5.1077 2.0089-8.5169 6.1303-15.242 4.0697-26.541z" fill="#e3dedb"/>
+      <path id="path6830-8" d="m354.68 203.77c4.482 19.552-3.806 29.976-17.033 36.871 8.913-1.6269 16.51 6.1873 20.592-11.364-0.48076-8.3857 1.5239-15.731-3.5586-25.507z" fill="#e3dedb"/>
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Monkey Face</dc:title>
+        <dc:date>2010-09-25T05:06:29</dc:date>
+        <dc:description>Based on a photo of my favorite cuddly monkey Jefro.</dc:description>
+        <dc:source>http://openclipart.org/detail/86599/monkey-face-by-stevepetmonkey</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>stevepetmonkey</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>Jungle Animal</rdf:li>
+            <rdf:li>Monkey</rdf:li>
+            <rdf:li>Monkey Face</rdf:li>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

@@ -1,0 +1,424 @@
+<style>
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+  .invalid-feedback{display: block;}
+  .img-box {
+    width: 700px;
+    margin: 0 auto;
+    height: 84.5vh;
+    /* border: #000 solid 1px; */
+    overflow: hidden;
+    position: relative;
+}
+.img-box img {
+    width: 100% !important;
+}
+/* .mat-slider-wrapper {
+    height: 3px !important;
+    top: 18px;
+    left: 8px !important;
+    right: 24px !important;
+    background: #000 !important;
+} */
+/* ::ng-deep .mat-slider.mat-slider-horizontal .mat-slider-track-wrapper {
+  height: 6px;
+  border-radius: 10px;
+  background-color: blue;
+}
+::ng-deep .mat-warn .mat-slider-thumb, .mat-warn .mat-slider-thumb-label {
+    background-color: blue;
+}
+::ng-deep .mat-accent .mat-slider-thumb {
+  
+  background-color: blue;
+  border: solid 2px blue;
+  
+} */
+mat-slider {
+  width: 200px;
+}
+::ng-deep .mat-slider.mat-slider-horizontal .mat-slider-track-wrapper {
+  height: 6px;
+  border-radius: 10px;
+  background-color: #3f51b5 !important;
+}
+::ng-deep .mat-slider-thumb {
+  background-color: #3f51b5 !important;
+  border: none !important;
+  box-shadow: 0px 0px 15px #000;
+  outline: 5px solid #fff;
+}
+
+::ng-deep .mat-slider-track-fill {
+  background-color: #3f51b5 !important;
+}
+
+::ng-deep .mat-slider-track-fill,
+::ng-deep .mat-slider-wrapper,
+::ng-deep .mat-slider-track-wrapper,
+::ng-deep .mat-slider-track-background {
+  height: 10px !important;
+  border-radius: 10px;
+}
+
+</style>
+<main role="main" id="main" class="main-wrapper d-block">
+    <div class="container-fluid">
+        <form enctype="multipart/form-data" [formGroup]="productForm" (ngSubmit)="createProduct()">
+       <div class="row pb-2  ">
+         <div class="card rounded p-4">
+          <div class="row ">
+              <div class="col-lg-4 col-md-4 ">
+                <div class="row">
+
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label>Product Name</label>
+                      <input type="text" class="form-control" name="" placeholder="Enter product name" formControlName="product_name" name="product_name" [ngClass]="{ 'is-invalid': submitted && f.product_name.errors }">
+                      <div *ngIf="submitted && f.product_name.errors" class="invalid-feedback">
+                        <div *ngIf="f.product_name.errors.required">Product Name is required</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label>Product Type</label>
+                  </div>
+
+                  <div class="col-md-9 pull-left form-group">
+                    <select class="form-control" formControlName="product_type" name="product_type" [ngClass]="{ 'is-invalid': submitted && f.product_type.errors }">
+                      <option value="">Choose product type</option>
+                      <option *ngFor="let x of productTypes" value="{{x.type_id}}">{{x.product}}</option>
+                    </select>
+                    <div *ngIf="submitted && f.product_type.errors" class="invalid-feedback">
+                      <div *ngIf="f.product_type.errors.required">Product Type is required</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 pull-right" style="padding-top: 6px;">
+                    <a href="javascript:void(0)" (click)="open(mymodal)" class=" btn btn-primary btn-sm pull-right" title="Add Product Type">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </a> &nbsp;&nbsp;
+                    <a href="javascript:void(0)" (click)="open(mymodalMinus)" class="btn btn-dark btn-sm  pull-right" title="Delete Product Type">
+                      <i class="fa fa-minus" aria-hidden="true"></i>
+                    </a>
+                  </div>
+
+                    <div class="col-12 form-group" formGroupName="product_size">
+                      <label class="d-block">Choose size of your product</label>
+
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="S" name="size[]" formControlName="S">
+                        <label class="form-check-label" for="inlineCheckbox5">S</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="M" name="size[]" formControlName="M">
+                        <label class="form-check-label" for="inlineCheckbox4">M</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="L" name="size[]" formControlName="L">
+                        <label class="form-check-label" for="inlineCheckbox3">L</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="XL" name="size[]" formControlName="XL">
+                        <label class="form-check-label" for="inlineCheckbox2">XL</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="XXL" name="size[]" formControlName="XXL">
+                        <label class="form-check-label" for="inlineCheckbox1">XXL</label>
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>Other Size</label>
+                        <input type="text" class="form-control" name="other_size" placeholder="Size" formControlName="other_size">
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group inputDnD">
+                        <label>Product Image</label>
+                        <input type="file" (change)="onFileSelect($event,'productimg',1)" class="form-control-file" id="productimg" name="productimg" accept="image/*"  data-title="Upload Image">
+                         <img [src]="" id="productimg-preview" height="100" width="100">
+                                <label>Preview</label> 
+                      </div>
+                    </div>
+
+                    <!-- <div class="col-12">
+                      <label>Canvas Size Front (in Pixel)</label>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <input type="no" class="form-control" name="canvas_front_width" formControlName="canvas_front_width" id="canvas_front_width" (change)="frontCanvasChange()" placeholder="Width" [ngClass]="{ 'is-invalid': submitted && f.canvas_front_width.errors }">
+                        <div *ngIf="submitted && f.canvas_front_width.errors" class="invalid-feedback">
+                          <div *ngIf="f.canvas_front_width.errors.required">Canvas front width is required</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <input type="no" class="form-control" name="canvas_front_height" formControlName="canvas_front_height" id="canvas_front_height" (change)="frontCanvasChange()" placeholder="Height" [ngClass]="{ 'is-invalid': submitted && f.canvas_front_height.errors }">
+                        <div *ngIf="submitted && f.canvas_front_height.errors" class="invalid-feedback">
+                          <div *ngIf="f.canvas_front_height.errors.required">Canvas front height is required</div>
+                        </div>
+                      </div>
+                    </div> -->
+
+
+                    <!-- <div class="col-12">
+                      <label>Canvas Size Back (in Pixel)</label>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <input type="no" class="form-control" name="canvas_back_width" formControlName="canvas_back_width" id="canvas_back_width" (change)="backCanvasChange()" placeholder="Width" [ngClass]="{ 'is-invalid': submitted && f.canvas_back_width.errors }">
+                        <div *ngIf="submitted && f.canvas_back_width.errors" class="invalid-feedback">
+                          <div *ngIf="f.canvas_back_width.errors.required">canvas back width is required</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <input type="no" class="form-control" name="canvas_back_height" formControlName="canvas_back_height" id="canvas_back_height" (change)="backCanvasChange()" placeholder="Height" [ngClass]="{ 'is-invalid': submitted && f.canvas_back_height.errors }">
+                        <div *ngIf="submitted && f.canvas_back_height.errors" class="invalid-feedback">
+                          <div *ngIf="f.canvas_back_height.errors.required">canvas back height is required</div>
+                        </div>
+                      </div>
+                    </div> -->
+
+                    <!-- <div class="col-12">
+    <div class="form-group inputDnD">
+      <label>Front View SVG</label>
+      <input type="file" class="form-control-file" id="frontSvg" accept="image/*" (change)="onFileSelect($event,'frontviewsvg')" data-title="Upload SVG">
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="form-group inputDnD">
+      <label>Back View SVG</label>
+      <input type="file" class="form-control-file" id="backSvg" accept="image/*" (change)="onFileSelect($event,'backviewsvg')" data-title="Upload SVG">
+    </div>
+  </div> -->
+
+
+                  </div>  
+      
+              </div> 
+        
+              <div class="col-lg-8 col-md-8" formArrayName="product_color">
+
+                <div class="row">
+                  <div class="col-12">
+                    <label>Product Color & Images</label>
+                  </div>
+                  <div class="col-md-12 pull-right pb-2" style="padding-top: 3px;">
+                    <a href="javascript:void(0)" (click)="addColor()" class="btn btn-primary btn-sm" title="Add Product Type">
+                      <i class="fa fa-plus" aria-hidden="true"></i> Add Color And Product Image
+                    </a> &nbsp;&nbsp;
+                  </div>
+
+                  <div class="w-100 pt-3 d-flex" style="max-height:55vh; overflow-y:scroll;flex-wrap: wrap;">
+                  <div class="col-md-12 form-group" *ngFor="let quantity of product_color().controls; let i=index" [formGroupName]="i">
+                    <div class="card p-3" style="position:relative;">
+                      <div class="row" style="position:absolute; top:-15px; right:0px; background:#f5f5f5;border-radius: 50%;z-index: 999;">
+                        <a href="javascript:void(0)" (click)="removeColor(i)" class="btn btn-default  btn-sm" title="Delete Product Type">
+                          <i class="fa fa-times" aria-hidden="true"></i>
+                        </a>
+                      </div>
+                      
+                      <div class="row">
+                        <div class="col-md-6 form-group d-flex">
+                          <input type="color" class="form-control" placeholder="Choose Color" formControlName="color" name="color">
+                          </div>
+                        <div class="col-md-6 form-group d-flex">
+                          <input type="text" class="form-control" placeholder="Color Name" formControlName="color_name" name="color_name">
+                        </div>
+                      </div>
+                      <!-- front image -->
+                      <div class="row frontrow{{i}}" style="display: none;">
+                        <input type="hidden" class="form-control" formControlName="canvas_front_left" name="canvas_front_left" class="canvas_front_left{{i}}">
+                        <input type="hidden" class="form-control" formControlName="canvas_front_top" name="canvas_front_top" class="canvas_front_top{{i}}">
+                        
+                        <div class="col-md-6 form-group d-flex">
+                          <!-- <input type="no" class="form-control" name="front_width_real" formControlName="front_width_real"  placeholder="Front canvas fix width" id="front_width_real{{i}}"> -->
+                          <input type="no" class="form-control" name="front_width" formControlName="front_width"  placeholder="Front canvas width" (change)="frontCanvasChange(i)" id="front_width{{i}}">
+                          <!-- <input id="front_width_real{{i}}" min="1" max="20" value='20' step="1" (change)="setZoom('front_width_real',i)" type="range"/> -->
+                          
+                          <!-- front width -->
+                          <input type="hidden" class="form-control" formControlName="front_transform" name="front_transform" class="front_transform{{i}}">
+                        </div>
+                        <div class="col-md-6 form-group d-flex">
+                          <!-- <input type="no" class="form-control" name="front_height_real" formControlName="front_height_real"  placeholder="Front canvas fix height"  id="front_height_real{{i}}"> -->
+                          <input type="no" class="form-control" name="front_height" formControlName="front_height"  placeholder="Front canvas height" (change)="frontCanvasChange(i)" id="front_height{{i}}">
+                           <!-- <input id="front_height_real{{i}}" min="1" max="10" value='10' step="1" (change)="setZoom('front_height_real',i)" type="range"/> -->
+                           <!-- resize front height -->
+                          <input type="hidden" class="form-control" formControlName="resize_front_height" name="resize_front_height" class="resize_front_height{{i}}">
+                          <input type="hidden" class="form-control" formControlName="resize_front_width" name="resize_front_width" class="resize_front_width{{i}}">
+                        </div>
+                      </div>
+                      <!-- Back image -->
+                      <div class="row backrow{{i}}" style="display: none;">
+                        <input type="hidden" class="form-control" formControlName="canvas_back_left" name="canvas_back_left" class="canvas_back_left{{i}}">
+                        <input type="hidden" class="form-control" formControlName="canvas_back_top" name="canvas_back_top" class="canvas_back_top{{i}}">
+
+                        <div class="col-md-6 form-group d-flex">
+                          <!-- <input type="no" class="form-control" name="back_width_real" formControlName="back_width_real"  placeholder="Back canvas fix width"   id="back_width_real{{i}}"> -->
+                          <input type="no" class="form-control" name="back_width" formControlName="back_width"  placeholder="Back canvas width"  (change)="backCanvasChange(i)" id="back_width{{i}}">
+                          <!-- <input id="back_width_real{{i}}" min="1" max="10" value='10' step="1" (change)="setZoomBack('back_width_real',i)" type="range"/> -->
+                          
+                           <!-- resize back width -->
+                          <input type="hidden" class="form-control" formControlName="back_transform" name="back_transform" class="back_transform{{i}}">
+                        </div>
+
+                        <div class="col-md-6 form-group d-flex">
+                          <!-- <input type="no" class="form-control" name="back_height_real" formControlName="back_height_real"  placeholder="Back canvas fix height"  id="back_height_real{{i}}"> -->
+                          <input type="no" class="form-control" name="back_height" formControlName="back_height"  placeholder="Back canvas height"  (change)="backCanvasChange(i)" id="back_height{{i}}">
+                          <!-- <input id="back_height_real{{i}}" min="1" max="10" value='10' step="1" (change)="setZoomBack('back_height_real',i)" type="range"/> -->
+                           <!-- resize back height -->
+                          <input type="hidden" class="form-control" formControlName="resize_back_height" name="resize_back_height" class="resize_back_height{{i}}">
+                          <input type="hidden" class="form-control" formControlName="resize_back_width" name="resize_back_width" class="resize_back_width{{i}}">
+                        </div>
+                      </div> 
+                   
+
+
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="matfront">
+                            <mat-slider  horizontal  style="z-index: 1;top: 60px; right:26px; position: absolute;display: none;" min="1" max="20" step="1" value="1" (input)="setZoom($event,i)" class="row frontrowslider{{i}}" ></mat-slider>
+                          </div>
+                          
+                          <div class="inputDnD">
+                            
+                            <div class="in1">
+                              <input type="file" style="display:none;width: 100%;" id="frontview{{i}}" name="frontview" formControlName="frontview" accept="image/*" (change)="onFileSelect($event,'frontview',i)">
+                              <span (click)="fileClick('front',i)" style="cursor:pointer; border:dashed 1px grey;display:block; padding:10px;text-align:center;width:100%;">
+                                <i class="fa fa-upload"></i> Front Image
+                              </span>
+                            </div>
+                            <div class="in2">
+                              <span class="frontSpan{{i}}" style="display:block;text-align: center;border: dashed 1px grey;position: relative;overflow: hidden;"></span>
+                            </div>
+                          </div>
+                            <!--<div *ngIf="submitted && f.frontview.errors" class="invalid-feedback">
+                              <div *ngIf="f.frontview.errors.required">Front image is required</div>
+                            </div>-->
+                        </div>
+                        <div class="col-12 text-center">
+                          <div class="matback">
+                            <mat-slider  horizontal style="z-index: 1;top: 60px; right:26px; position: absolute;display: none;" min="1" max="20" step="1" value="1" (input)="setZoomBack($event,i)" class="row backrowslider{{i}}"  ></mat-slider>
+                          </div>
+                          <div class="inputDnD">
+                            <div class="in1">
+                              <input type="file" style="display:none;width: 100%;" id="backview{{i}}" formControlName="backview" accept="image/*" (change)="onFileSelect($event,'backview',i)" data-title="Back Image Upload">
+                              <span (click)="fileClick('back',i)" style="cursor:pointer; border:dashed 1px grey;display:block; padding:10px;text-align:center">
+                                
+                                <i class="fa fa-upload"></i> Back Image
+                              </span>
+                            </div>
+                            <div class="in2">
+                              <span class="backSpan{{i}}" style="display:block;text-align: center;border: dashed 1px grey;position: relative;overflow: hidden;"></span>
+                            </div>
+                            
+                            
+                          </div>
+                          <!--  [ngClass]="{ 'is-invalid': submitted && f.backview.errors }"  <div *ngIf="submitted && f.backview.errors" class="invalid-feedback">
+        <div *ngIf="f.backview.errors.required">Back image is required</div>
+      </div>-->
+                        </div>
+                      </div>
+
+                    </div>
+                      <!--<div class="row">
+                        <div class="col-6 text-center">
+                          <img src="assets/img/file-preview.jpg" width="100" height="100" class=" frontblock{{i}}" style="object-fit:contain">
+                        </div>
+                        <div class="col-6 text-center">
+                          <img src="assets/img/file-preview.jpg" width="100" height="100" class=" backblock{{i}}" style="object-fit:contain">
+                        </div>
+                      </div>-->
+                    </div>
+                  </div>
+                </div>
+
+                  
+
+                  <!--<div class="row">
+        <div class="col-6 my-auto text-center">
+            <img src="assets/img/file-preview.jpg" width="100%" height="auto" class="img-fluid frontblock">
+        </div>
+        <div class="col-6 my-auto text-center">
+            <img src="assets/img/file-preview.jpg"  width="100%" height="auto" class="img-fluid backblock">
+        </div>
+    </div>-->
+
+                  <div class="row">
+                    <div class="col-lg-12 mt-2 text-center">
+                      <button type="submit" class="btn btn-primary btn-lg col-2"> Create </button>
+                      <a href="javascript:void(0)" style="margin-left: 5px;" routerLink="/admin/product" class="btn btn-dark  col-2 btn-lg"> Back </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>    
+        </div>
+       </form>
+
+       <ng-template #mymodal let-modal style="max-width: 1000px;">
+          <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Product Type</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <form class="w-100" [formGroup]="productTypeForm" (ngSubmit)="createProductType()">
+          <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label>Product Type Name</label>
+                      <input type="text" class="form-control" placeholder="Enter name of product Type" formControlName="product_type_name" name="product_type_name" [ngClass]="{ 'is-invalid': submittedPT && fPt.product_type_name.errors }">
+                      <div *ngIf="submittedPT && fPt.product_type_name.errors" class="invalid-feedback">
+                        <div *ngIf="fPt.product_type_name.errors.required">Product Type Name is required</div>
+                        </div>
+                    </div>  
+                  </div>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-outline-dark"><i class="fa fa-pencil"></i> Add </button>
+          </div>
+        </form>
+      </ng-template>
+
+      <ng-template #mymodalMinus let-modal style="max-width: 1000px;">
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Product Type</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label>Product Type</label>
+                    <select class="form-control" name="product_type_remove" id="product_type_remove" (change)="checkErrPType()">
+                        <option value="">Choose product type</option>
+                        <option *ngFor="let x of productTypes" value="{{x.type_id}}">{{x.product}}</option>
+                    </select>
+                    <div *ngIf="product_type_error" class="invalid-feedback">
+                      <div style="color:red">Please Select Product Type</div>
+                    </div>
+                  </div>  
+                </div>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="removeProductType()"><i class="fa fa-trash"></i> Remove </button>
+        </div>
+    </ng-template>
+
+    </div>
+ </main>

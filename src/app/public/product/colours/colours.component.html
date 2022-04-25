@@ -1,0 +1,62 @@
+<style>
+  .prod-gallery:hover {
+    box-shadow: 0px 1px 5px 5px #98daf1;
+    transform: scale(1.1);
+    cursor: pointer;
+  }
+
+  .prod-gallery {
+    transition: transform .5s ease;
+    cursor: pointer;
+  }
+</style>
+<main role="main" *ngIf='pageLoaded'>
+  <div class="row">
+    <img *ngIf="product.bg_image!='' && (product.bg_file_extention=='jpg' || product.bg_file_extention=='jpeg' || product.bg_file_extention=='gif' || product.bg_file_extention=='png'); else noneBg" [src]="product.bg_image" class="full-video">
+    <ng-template #noneBg>
+      <div class="full-video" style="background-color: #2D2C2C;"></div>
+    </ng-template>
+  </div>
+  <video autoplay playsinline muted loop id="myVideo" width="100%" style="height: 100% !important;overflow-y: none !important;" oncanplay="this.play()" onloadedmetadata="this.muted = true" *ngIf="product.bg_file_extention=='mp4' || product.bg_file_extention=='avi' || product.bg_file_extention=='mpeg4'">
+    <source [src]="product.bg_image" type="video/mp4">
+  </video>
+
+  <div id="outer" style="z-index: 999999999999;">
+    <div id="table-container" style="width:100%;">
+      <div id="table-cell">
+
+        <div class="container choose-product text-md-center">
+          <div class="row d-flex justify-content-center" style="height: 100vh;">
+
+            <div class="col-3 my-auto">
+              <h2 class="mt-3 text-center text-white productHeading"><strong>CHOOSE COLOR</strong></h2>
+              <div *ngFor="let x of product.colors;">
+                <a href="javascript:void(0)" [style]="{'background-color':x.color,'text-shadow': '2px 1px 2px #000'}" (click)="printNow(x.color)" class="btn btn-primary btn-lg productlargebtn btn-block mb-2">
+                  {{x.color_name && x.color_name!=''? x.color_name:x.color}}
+                </a>
+              </div>
+            </div>
+
+            <!--<div *ngFor="let x of product.colors; let i=index;" class="col-3">
+            <div class="box bg-white m-2  prod-gallery" (click)="printNow(x.color)">
+    <label for="prod_{{x.color}}">
+      <div>
+        <img src="{{appurl+x.frontview_file}}" class="img-fluid" alt="">
+      </div>
+      <div class="form-check form-check-inline">
+        <span [ngStyle]="{'background-color': x.color,'width':'20px','height':'20px','border': '1px solid gray'}"></span>
+      </div>
+    </label>
+  </div>
+          </div>-->
+
+          </div>
+          <!--<div class="text-md-center next-btn mt-4 mb-4">
+            
+          </div>-->
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>

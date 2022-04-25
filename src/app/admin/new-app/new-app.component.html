@@ -1,0 +1,795 @@
+<style>
+    .new-app-loader{
+        width: 100%;
+        position: absolute;
+        z-index: 1;
+        height: 100%;
+        background: black;
+        opacity: 0.7;
+        color: white;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        margin: 0 auto;
+    }
+    input[type="checkbox"][readonly] {
+        pointer-events: none;
+    }
+</style>
+<main role="main" id="main" class="main-wrapper">
+    <div class="container-fluid">
+        <h2 style="text-align: center;">{{eventData.name}}</h2>
+       <div class="row">
+
+           <!-- <div class="col-lg-12"> -->
+               <div class="nav flex-column nav-pills col-lg-2 pr-1" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+ 
+                   <a class="nav-link {{this.tabEnabled==0? 'active':''}}" id="v-pills-landing-page-tab" data-toggle="pill" href="javascript:void(0)" (click)="changeLayout('landing-page')" role="tab" aria-controls="v-pills-home" aria-selected="true">Landing Page</a>
+                   
+                   <a class="nav-link {{this.tabEnabled==1? 'active':''}}" id="v-pills-welcome-tab" data-toggle="pill" href="javascript:void(0)" (click)="changeLayout('welcome')" role="tab" aria-controls="v-pills-profile" aria-selected="false">Welcome</a>
+                   
+                   <a class="nav-link {{this.tabEnabled==2? 'active':''}}" id="v-pills-registration-tab" data-toggle="pill" href="javascript:void(0)" (click)="changeLayout('registration')" role="tab" aria-controls="v-pills-messages" aria-selected="false">Registration</a>
+                   
+                   <a class="nav-link {{this.tabEnabled==3? 'active':''}}" id="v-pills-product-tab" data-toggle="pill" href="javascript:void(0)" role="tab" (click)="changeLayout('product')" aria-controls="v-pills-settings" aria-selected="false">Product</a>
+ 
+                   <a class="nav-link {{this.tabEnabled==4? 'active':''}}" id="v-pills-design-tab" data-toggle="pill" href="javascript:void(0)" role="tab" (click)="changeLayout('design')" aria-controls="v-pills-profile" aria-selected="false">Design</a>
+                   
+                   <a class="nav-link {{this.tabEnabled==5? 'active':''}}" id="v-pills-confirm-tab" data-toggle="pill" href="javascript:void(0)" role="tab" (click)="changeLayout('confirm')" aria-controls="v-pills-messages" aria-selected="false">Confirm / Preview</a>
+                   
+                   <a class="nav-link {{this.tabEnabled==6? 'active':''}}" id="v-pills-thanks-you-tab" data-toggle="pill" href="javascript:void(0)" role="tab" (click)="changeLayout('thanks-you')" aria-controls="v-pills-settings" aria-selected="false">Thank You</a>
+ 
+                   <a class="nav-link {{this.tabEnabled==7? 'active':''}}" id="v-pills-ui-tab" data-toggle="pill" href="javascript:void(0)" role="tab" (click)="changeLayout('ui')" aria-controls="v-pills-profile" aria-selected="false">UI Elements</a>
+               </div>
+               <div class="tab-content col-lg-10 box-shadow-md p-5" id="v-pills-tabContent">
+                   <div class="tab-pane fade {{this.tabEnabled==0? 'show active':''}}" id="landing-page" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <form enctype="multipart/form-data" [formGroup]='landingForm' (ngSubmit)="createLanding()">
+                       <h4><strong>Landing Page</strong></h4>
+
+                       <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group inputDnD mb-0">
+                                    <label>Background Image / Video</label>
+                                    <input type="file" class="form-control-file" id="inputFile1" accept="image/*" (change)="onFileSelect($event,'landing')" data-title="Drag your image/Video here eg. PNG, JPG, MPEG4">
+                                    <span class="app-preview" *ngIf="(config.landing && config.landing.bg_file_path!='') || activeContent.landing">
+                                        <img [src]="fileurl+''+(config.landing && config.landing.bg_file_path!=''? config.landing.bg_file_path:'')" class="landing-preview" height="100" width="100">
+                                        <label>Preview</label>
+                                    </span>
+                                </div>
+
+                                <div class="form-group mb-0 inputDnD">
+                                    <label>Logo</label>
+                                    <input type="file" class="form-control-file" id="inputFile2" accept="image/*" (change)="onFileSelect($event,'landinglogo')" data-title="Drag your image/Video here eg. PNG, JPG, MPEG4">
+                                    <span class="app-preview" *ngIf="(config.landing && config.landing.logo_file_path!='') || activeContent.landing">
+                                        <img [src]="fileurl+''+(config.landing && config.landing.logo_file_path!=''? config.landing.logo_file_path:'')" class="landinglogo-preview" height="100" width="100">
+                                        <label>Preview</label>
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Button Text</label>
+                                    <input type="text" class="form-control" name="button_text" formControlName="button_text" placeholder="Enter button text here" [ngClass]="{ 'is-invalid': submitted && fl.button_text.errors }">
+                                        <div *ngIf="submitted && fl.button_text.errors" class="invalid-feedback">
+                                            <div *ngIf="fl.button_text.errors.required">Button text is required</div>
+                                        </div>
+                                        <input type="hidden" formControlName="event" [value]="event_id" name="event">
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label class="row">Button Radius (in px)</label>
+                                    <div class="row">
+                                        <div class="d-flex">
+                                            <div class="col pl-0">
+                                                <label>Top Left</label>
+                                                <input type="number" class="form-control pull-left" title="Top Left" name="radius_topleft" formControlName="radius_topleft" placeholder="Top-Left">
+                                            </div>
+                                            <div class="col">
+                                                <label>Top Right</label>
+                                                <input type="number" class="form-control pull-left" title="Top Right" name="radius_topright" formControlName="radius_topright" placeholder="Top-Right">
+                                            </div>
+                                            <div class="col">
+                                                <label>Bottom Right</label>
+                                                <input type="number" class="form-control pull-left" title="Bottom Right" name="radius_botright" formControlName="radius_botright" placeholder="Bottom-Right">
+                                            </div>
+                                            <div class="col pr-0">
+                                                <label>Bottom Left</label>
+                                                <input type="number" class="form-control pull-left" title="Bottom Left" name="radius_botleft" formControlName="radius_botleft" placeholder="Bottom-Left">
+                                            </div>    
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label>Button Background Color</label>
+                                            <input type="color" class="form-control" title="Button Background Color" name="btn_bg_color" formControlName="btn_bg_color" placeholder="Button Background Color">
+                                        </div>
+
+                                        <div class="col-6">
+                                            <label>Button Text Color</label>
+                                            <input type="color" class="form-control" title="Button Text Color" name="btn_text_color" formControlName="btn_text_color" placeholder="Button Text Color">
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                            </div>
+                       </div>
+
+                        <div class="row">
+                            <div class="form-group col-lg-12"> 
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                        
+                    </form>      
+                   </div>
+                
+                    <div class="new-app-loader" *ngIf="loader">
+                        <h4 style="text-align: center;padding: 12%;" class="noData">
+                            <img src="/assets/img/loading.gif" height="80" width="80">
+                            Saving...
+                        </h4>
+                    </div>
+
+                   <div class="tab-pane fade {{this.tabEnabled==1? 'show active':''}}" id="welcome" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <form enctype="multipart/form-data" [formGroup]='welcomeForm' (ngSubmit)="createWelcome()">
+                        <h4><strong>Welcome</strong></h4>
+    
+                        <div class="row">
+                            <div class="col-lg-6 ">
+                                <div class="form-group inputDnD mb-0">
+                                    <label>Background Image / Video</label>
+                                    <input type="file" class="form-control-file" id="inputFile2" name="bgimage" accept="image/*" (change)="onFileSelect($event,'welcome')" data-title="Drag your image/Video here eg. PNG, JPG, MPEG4">
+                                    <span class="app-preview" *ngIf="(config.welcome && config.welcome.bg_file_path!='') || activeContent.welcome">
+                                        <img [src]="fileurl+''+(config.welcome && config.welcome.bg_file_path!=''? config.welcome.bg_file_path:'')" class="welcome-preview" height="100" width="100">
+                                        <label>Preview</label>
+                                    </span>
+                                </div>
+                                
+                               
+                                <div class="form-group inputDnD mb-0">
+                                    <label>Logo</label>
+                                    <input type="file" class="form-control-file" id="inputFile2" accept="image/*" (change)="onFileSelect($event,'welcomelogo')" data-title="Drag your image/Video here eg. PNG, JPG, MPEG4">
+                                    <span class="app-preview" *ngIf="(config.welcome && config.welcome.logo_file_path!='') || activeContent.welcome">
+                                        <img [src]="fileurl+''+(config.welcome && config.welcome.logo_file_path!=''? config.welcome.logo_file_path:'')" class="welcomelogo-preview" height="100" width="100">
+                                        <label>Preview</label>
+                                    </span>
+                                </div>
+                                <div class="form-group" style="display: none;">
+                                    <label>Add Welcome text</label>
+                                    <input type="text" class="form-control mb-3" name="welcome_title" formControlName="welcome_title" placeholder="Welcome text" [ngClass]="{ 'is-invalid': submitted && f.welcome_title.errors }">
+                                    <div *ngIf="submitted && f.welcome_title.errors" class="invalid-feedback">
+                                        <div *ngIf="f.welcome_title.errors.required">Welcome title is required</div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="display: none;">    
+                                    <textarea class="form-control" style="height: 60px;" name="welcome_desc" formControlName="welcome_desc" rows="5" placeholder="Welcome Description" [ngClass]="{ 'is-invalid': submitted && f.welcome_desc.errors }"></textarea>
+                                    <div *ngIf="submitted && f.welcome_desc.errors" class="invalid-feedback">
+                                        <div *ngIf="f.welcome_desc.errors.required">Welcome description is required</div>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="form-group">
+                                    <label>Event</label>
+                                    <select class="form-control" name="event" formControlName="event" [ngClass]="{ 'is-invalid': submitted && f.event.errors }">
+                                        <option value="">Select Event</option>
+                                        <option *ngFor="let x of event" [value]="x.id">{{x.name}}</option>
+                                    </select>
+                                    <div *ngIf="submitted && f.event.errors" class="invalid-feedback">
+                                        <div *ngIf="f.event.errors.required">Please select event</div>
+                                    </div>
+                                </div> -->
+
+                            </div>
+    
+                            <div class="col-lg-6">
+                                
+                                <div class="form-group">
+                                    <label>Button Text</label>
+                                    <input type="text" class="form-control" name="button_text" formControlName="button_text" placeholder="Enter button text here" [ngClass]="{ 'is-invalid': submitted && f.button_text.errors }">
+                                    <div *ngIf="submitted && f.button_text.errors" class="invalid-feedback">
+                                        <div *ngIf="f.button_text.errors.required">Button text is required</div>
+                                    </div>
+                                    <input type="hidden" formControlName="event" [value]="event_id" name="event">
+                                </div>
+                                
+                                    <div class="form-group col-12">
+                                        <label class="row">Button Radius (in px)</label>
+                                        <div class="row">
+                                            <div  class="d-flex">
+                                                <div class="col pl-0">
+                                                    <label>Top Left</label>
+                                                    <input type="number" class="form-control" title="Top Left" name="radius_topleft" formControlName="radius_topleft" placeholder="Top-Left">
+                                                </div>
+                                                <div class="col">    
+                                                    <label>Top Right</label>
+                                                    <input type="number" class="form-control" title="Top Right" name="radius_topright" formControlName="radius_topright" placeholder="Top-Right">
+                                                </div>
+                                                <div class="col">    
+                                                    <label>Bottom Right</label>
+                                                    <input type="number" class="form-control" title="Bottom Right" name="radius_botright" formControlName="radius_botright" placeholder="Bottom-Right">
+                                                </div>
+                                                <div class="col">    
+                                                    <label>Bottom Left</label>
+                                                    <input type="number" class="form-control" title="Bottom Left" name="radius_botleft" formControlName="radius_botleft" placeholder="Bottom-Left">
+                                                </div>
+                               
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                <div class="row">
+                                    <div class="form-group col-lg-6">
+                                        <label>Button Background Color</label>
+                                        <input type="color" class="form-control" title="Button Background Color" name="btn_bg_color" formControlName="btn_bg_color" placeholder="Button Background Color">
+                                    </div>
+
+                                    <div class="form-group col-lg-6">
+                                        <label>Button Text Color</label>
+                                        <input type="color" class="form-control" title="Button Text Color" name="btn_text_color" formControlName="btn_text_color" placeholder="Button Text Color">
+                                    </div>
+                                </div>
+                              
+                                
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12"> 
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>  
+
+
+                    </form>
+                   </div>
+                   
+                   <div class="tab-pane fade {{this.tabEnabled==2? 'show active':''}}" id="registration" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                     <h4><strong>Registration</strong></h4>
+                    <form enctype="multipart/form-data" [formGroup]='regForm' (ngSubmit)="createReg()">
+                     <div class="row">
+                           <div class="form-group col-lg-6 inputDnD">
+                               <label>Background Image / Video</label>
+                               <input type="file" class="form-control-file" id="inputFile3" name="bgimage" accept="image/*" (change)="onFileSelect($event,'reg')" data-title="Drag your image/Video here eg. PNG, JPG, MPEG4">
+ 
+                               <span class="app-preview" *ngIf="(config.reg && config.reg.bg_file_path!='') || activeContent.registration">
+                                <img [src]="fileurl+''+(config.reg && config.reg.bg_file_path!=''? config.reg.bg_file_path:'')" class="reg-preview" height="100" width="100">
+                                <label>Preview</label>
+                               </span>
+
+                                <div class="form-group" formGroupName="data_col" [ngClass]="{ 'is-invalid': submitted && fR.data_col.errors }">
+                                   <label class="d-block">Data Collection Options</label>
+                                   <div class="form-check-inline mb-2">
+                                       <label class="form-check-label checkbox-info">
+                                         <input type="checkbox" class="form-check-input input" value="data_collected" name="data_col[]" (change)="checkDataCol($event)" formControlName="data_collected">
+                                         Data Already Collected from registered emails
+                                       </label>
+                                   </div>
+                                   <div class="form-check-inline mb-2">
+                                       <label class="form-check-label checkbox-info">
+                                         <input type="checkbox" class="form-check-input reg_fields" value="first_name" name="data_col[]" formControlName="first_name">First Name
+                                       </label>
+                                   </div>
+                                   <div class="form-check-inline mb-2">
+                                       <label class="form-check-label checkbox-info">
+                                         <input type="checkbox" class="form-check-input reg_fields" value="last_name" name="data_col[]" formControlName="last_name">Last Name
+                                       </label>
+                                   </div>
+                                   <div class="form-check-inline mb-2">
+                                       <label class="form-check-label checkbox-info">
+                                         <input type="checkbox" class="form-check-input reg_fields" value="email" name="data_col[]" formControlName="email" readonly>Email
+                                       </label>
+                                   </div>
+                                   <div class="form-check-inline mb-2">
+                                       <label class="form-check-label checkbox-info">
+                                         <input type="checkbox" class="form-check-input reg_fields" value="phone" name="data_col[]" formControlName="phone">Phone
+                                       </label>
+                                   </div>
+                                   <div class="form-check-inline mb-2">
+                                       <label class="form-check-label checkbox-info">
+                                         <input type="checkbox" class="form-check-input reg_fields" value="address_1" name="data_col[]" formControlName="address_1">Address 1
+                                       </label>
+                                   </div>
+                                   <div class="form-check-inline mb-2">
+                                       <label class="form-check-label checkbox-info">
+                                         <input type="checkbox" class="form-check-input reg_fields" value="address_2" name="data_col[]" formControlName="address_2">Address 2
+                                       </label>
+                                   </div>
+                                   <div class="form-check-inline mb-2">
+                                       <label class="form-check-label checkbox-info">
+                                         <input type="checkbox" class="form-check-input reg_fields" value="city" name="data_col[]" formControlName="city">City
+                                       </label>
+                                   </div>
+                                   <div class="form-check-inline mb-2">
+                                       <label class="form-check-label checkbox-info">
+                                         <input type="checkbox" class="form-check-input reg_fields" value="zip" name="data_col[]" formControlName="zip">Zip
+                                       </label>
+                                   </div>
+                                   <div *ngIf="submitted && fR.data_col.errors" class="invalid-feedback">
+                                        <div *ngIf="fR.data_col.errors.required">Data Collection is required</div>
+                                    </div>
+                                 </div>
+
+                                 <div *ngIf="importDataCol">
+                                    <label>Import Customers</label>
+                                    <input type="file" class="form-control-file" id="inputFile3" name="bgimage" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" (change)="onFileSelect($event,'reg_import')" data-title="Drag your CSV for customer details">
+                                    <label class="text-danger"><small>
+                                        Note* : Please <a href="/assets/importCustomerDemo.csv">click here</a> to view required format of csv file before upload.
+                                        Select file and click on submit button to upload CSV file.File must be CSV format.
+                                    </small></label>
+                                   
+                                    <!-- <div class="col-lg-6">
+                                        <label><strong>Email</strong></label>
+                                        <input type="text" class="form-control" name="email" formControlName="button_text" placeholder="CUSTOMISED" [ngClass]="{ 'is-invalid': submitted && fR.button_text.errors }">
+                                        <div *ngIf="submitted && fR.button_text.errors" class="invalid-feedback">
+                                            <div *ngIf="fR.button_text.errors.required">Button text is required</div>
+                                        </div>
+                                    </div>  -->
+                                 </div>
+
+                                 <div style="background:#e8e8e8;padding: 10px;height: 100px;overflow-y: scroll;">
+                                    <h4>Preview Content</h4>
+                                    <span id="csvdata"></span>
+                                </div>
+
+                                 <input type="hidden" formControlName="event" [value]="event_id" name="event">
+
+                                 <!-- <div class="form-group">
+                                    <label>Event</label>
+                                    <select class="form-control" name="event" formControlName="event">
+                                        <option value="">Select Event</option>
+                                        <option *ngFor="let x of event" [value]="x.id">{{x.name}}</option>
+                                    </select>
+                                </div> -->
+                           </div>
+                           
+                            <!-- <div *ngIf="csvArray.length>0">
+                                <ul>
+                                    <li *ngFor="let x of csvArray | keyvalue;let i = index">
+                                        <span *ngIf="i==0" style="background-color:blue">{{i+'_'+x.value}}</span>
+                                        <span *ngIf="i!=0" style="background-color:red">{{i+'_'+x.value}}</span>
+                                    </li>
+                                </ul>
+                            </div> -->
+
+                           <div class="col-lg-6">
+                            
+                                <div class="form-group">
+                                        <label class="">Header Title</label>
+                                        <input type="text" class="form-control" name="header_title" formControlName="header_title" placeholder="Header" [ngClass]="{ 'is-invalid': submitted && fR.header_title.errors }"> 
+                                        <div *ngIf="submitted && fR.header_title.errors" class="col-lg-3 invalid-feedback">
+                                        <div *ngIf="fR.header_title.errors.required">Header title is required</div>
+                                        </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label class="">Button Text</label>
+                                        <input type="text" class="form-control" name="button_text" formControlName="button_text" placeholder="CUSTOMISED" [ngClass]="{ 'is-invalid': submitted && fR.button_text.errors }">
+                                        <div *ngIf="submitted && fR.button_text.errors" class="invalid-feedback">
+                                            <div *ngIf="fR.button_text.errors.required">Button text is required</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label class="">Button Color</label>
+                                        <input type="color" class="form-control p-0" name="button_color" formControlName="button_color" placeholder="Color" [ngClass]="{ 'is-invalid': submitted && fR.button_color.errors }"> 
+                                        <div *ngIf="submitted && fR.button_color.errors" class="invalid-feedback">
+                                        <div *ngIf="fR.button_color.errors.required">Button color is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                               <div class="form-group">
+                                 <label class="d-block">Add Terms and Conditions</label>
+                                 <div class="form-check-inline ">
+                                     <label class="form-check-label">
+                                       <input type="radio" class="form-check-input input" name="is_terms" formControlName="is_terms" value="yes">Yes
+                                     </label>
+                                 </div>
+                                 <div class="form-check-inline">
+                                     <label class="form-check-label">
+                                       <input type="radio" class="form-check-input" name="is_terms" formControlName="is_terms" value="no">No
+                                     </label>
+                                 </div>
+                               </div> 
+ 
+                               <div class="form-group">
+                                 <textarea class="form-control" rows="5" name="terms_cond" formControlName="terms_cond"></textarea>
+                               </div>  
+ 
+                               
+ 
+                               
+                           </div>
+                       </div>
+
+                       <div class="row">
+                        <div class="col-lg-12"> 
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div> 
+
+                    </form>
+                   </div>
+                   
+                   <div class="tab-pane fade {{this.tabEnabled==3? 'show active':''}}" id="product" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                     <h4><strong>Product Selection</strong></h4>
+                    <form enctype="multipart/form-data" [formGroup]="productForm" (ngSubmit)="createProduct()">
+                      <div class="row">
+                           <div class="form-group col-lg-6 inputDnD">
+                               <label>Upload Background Image / Video</label>
+                               <input type="file" class="form-control-file" id="inputFile4" accept="image/*" name="bgimage" (change)="onFileSelect($event,'product')" data-title="Drag your image/Video here eg. PNG, JPG, MPEG4">
+                               <span class="app-preview" *ngIf="(config.product && config.product.bg_file_path!='') || activeContent.product">
+                                <img [src]="fileurl+''+(config.product && config.product.bg_file_path!=''? config.product.bg_file_path:'')" class="product-preview" height="100" width="100">
+                                <label>Preview</label>
+                               </span>
+
+                               <div class="form-group">
+                                   <label>Product Selection Header "Choose your Product"</label>
+                                   <input type="text" class="form-control" name="header_text" formControlName="header_text" placeholder="Enter Text Here">
+                               </div>
+                               <div class="form-group">
+                                <label>Product Selection Header "Choose size"</label>
+                                <input type="text" class="form-control" name="header_size_text" formControlName="header_size_text" placeholder="Enter Text Here">
+                            </div>
+
+                               <button type="submit" class="btn btn-primary">Submit</button>
+                           </div>
+                           
+                           
+                           <div class="col-lg-6">
+                            <button class="btn btn-primary mb-2 pull-right" routerLink="/admin/create-product">Create New Product</button>
+                               <label class="mt-3">Select Products</label>
+                               <div class="box-shadow-md w-100 table-responsive px-4" style="height: 350px; overflow-y: scroll;">
+                                   <table class="table" >
+                                       <tbody>
+                                           <tr *ngFor="let x of products;" class="{{enabledProd.indexOf(x.product_id) <= -1? 'bg-light product-inactive':''}}">
+                                            <!-- <td>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input input productNames" id="product{{x.product_id}}" (change)="pushProd(x.product_id,$event.target)" [checked]="prodChecked(x.product_id)" name="productNames[]" value="{{x.product_id}}" [disabled]="x.is_active==0? 'disabled':false">
+                                                </div>
+                                            </td> -->
+                                             <td *ngIf="x.is_active==1">
+                                                 <img [src]="fileurl+''+(x.productview_file ? x.productview_file : x.frontview_file)" width="50" height="50">
+                                                 <!--<img src="{{fileurl+x.backview_file}}" width="50" height="50">-->
+                                             </td>
+                                             <td *ngIf="x.is_active==1">
+                                                 <h6><strong>{{x.name}}</strong></h6>
+                                                 <!-- <p class="mb-0">Front: {{x.front_canvas_width}} X {{x.front_canvas_height}}</p> -->
+                                                 <!-- <p class="mb-0">Back: {{x.back_canvas_width}} X {{x.back_canvas_height}}</p> -->
+                                             </td>
+                                             <td *ngIf="x.is_active==1">
+                                                <button type="button" class="btn btn-primary btn-sm" *ngIf="enabledProd.indexOf(x.product_id)<=-1" (click)="changeProdStatus(x.product_id,'yes')">Inactive</button> 
+                                                <button type="button" class="btn btn-dark btn-sm" *ngIf="enabledProd.indexOf(x.product_id)>-1" (click)="changeProdStatus(x.product_id,'no')">Active</button>
+                                             </td>
+                                           </tr>
+                                       </tbody>
+                                   </table>
+                               </div>
+                               
+                           </div>
+                           
+                      </div>
+                    </form>   
+                   </div>
+ 
+                   <div class="tab-pane fade {{this.tabEnabled==4? 'show active':''}}" id="design" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                     
+                     <div class="row">
+                         <div class="col-6">
+                             <h4><strong>Product Design</strong></h4>      
+                         </div>
+                         <!-- <div class="col-6 text-right">
+                           <button class="btn btn-primary">Add New Product</button>
+                         </div> -->
+                     </div>
+                     <form [formGroup]="designForm">
+                     <div class="table-responsive">
+                         <table class="table">
+                             <thead>
+                                 <tr>
+                                   <th>&nbsp;</th>
+                                   <th>Print Location</th>
+                                   <th>Product Options</th>
+                                   <th>Gallery Type</th>
+                                   <th>Select Gallery</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr *ngFor='let x of selProducts'>
+                                   <th>
+                                       {{x.product_name}}
+                                       <input type="hidden" formControlName="productID">
+                                    </th>
+                                   <td>
+                                       <select class="form-control" (change)="createProductDesign(x.product_id)" id="designArea{{x.product_id}}">
+                                           <option value=""> Select Print Location</option>
+                                           <option value="front_only" [selected]="x.print_location == 'front_only'">Front Only</option>
+                                           <option value="back_only" [selected]="x.print_location == 'back_only'">Back Only</option>
+                                           <option value="both" [selected]="x.print_location == 'both'">Both</option>
+                                       </select>
+                                   </td>
+                                   <td>
+                                       <select class="form-control" (change)="createProductDesign(x.product_id)" id="designScale{{x.product_id}}">
+                                           <option value=""> Select Product Option</option>
+                                           <option value="scalable" [selected]="x.product_option == 'scalable'">Scalable</option>
+                                           <option value="non_scalable" [selected]="x.product_option == 'non_scalable'">Non Scalable</option>
+                                       </select>
+                                   </td>
+                                   <td>
+                                       <select class="form-control" id="designGallery{{x.product_id}}" (change)="createProductDesign(x.product_id)">
+                                           <option value=""> Select Gallery Type</option>
+                                           <option value="single_gallery" [selected]="x.gallery_type == 'single_gallery'">Single Gallery</option>
+                                           <option value="multiple_gallery" [selected]="x.gallery_type == 'multiple_gallery'">Multiple Gallery</option>
+                                       </select>
+                                   </td>
+                                   <td>
+                                        <!-- <button class="btn btn-primary" (click)="assignGallery(x.product_id)">Assign Gallery</button> -->
+                                        <button *ngIf="x.galid==null;else galExist" class="btn btn-primary" (click)="open(mymodal,x.product_id,x.product_name)">Assign Gallery</button>
+                                        <ng-template #galExist>
+                                            Gallery Assigned <a href="javascript:void(0)" (click)="open(mymodal,x.product_id,x.product_name)">(Re-assign)</a>
+                                        </ng-template>
+                                   </td>
+                                 </tr>
+                             </tbody>
+                         </table>
+                     </div>
+                    </form>
+                    <div class="prodDesignMsg">{{prodDesignMsg}}</div>
+                     <!-- <div class="row">
+                         <div class="form-group col-lg-5 inputDnD">
+                             <label>Upload Artwork</label>
+                             <input type="file" class="form-control-file" id="inputFile" accept="image/*" onchange="readUrl(this)" data-title="Drag your artwork here">
+                         </div>
+                     </div>       -->
+                     <!-- <button type="submit" class="btn btn-primary btn-block">Submit</button> -->
+
+                     <ng-template #mymodal let-modal style="max-width: 1000px;">
+                        <div class="modal-header">
+                          <h4 class="modal-title" id="modal-basic-title">{{assigGalTitle}}</h4>
+                          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                        <form name="galleryForm" [formGroup]="galleryForm" (ngSubmit)="assignGalleryNow()">
+                        <div class="modal-body">
+                            <main role="main" id="main" class="main-wrapper">
+                                
+                                    <div class="container">
+                                        <div class="row gallery-view">
+                                            <div class="col-md-4 col-sm-6" *ngFor="let x of gallery;let i = index">
+                                                <div class="form-check-inline mb-2" style="padding-left:25px;">
+                                                    <label class="form-check-label checkbox-info galleryChk" for="gal{{i}}" style="opacity:1">
+                                                        <input type="checkbox" class="form-check-input" name="gallery[]" formControlName="galleries" id="gal{{i}}" (change)="pushGal(x.gallery_id,$event.target,i)" checked="false">
+                                                        {{x.title}}
+                            
+                                                        <div class="box">
+                                                            <img src="{{'/src/assets/uploads/'+x.gallery_image}}" class="img-fluid">
+                                                            <!-- <ul class="icon">
+                                                                <li><a href="javascript:void(0)" routerLink="/admin/artwork/{{x.gallery_id}}"><i class="fa fa-eye"></i></a></li>
+                                                                <li><a href="javascript:void(0)" (click)="deleteGallery(x.gallery_id)"><i class="fa fa-trash"></i></a></li>
+                                                            </ul> -->
+                                                        </div>
+                            
+                                                    </label>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                            
+                                        <div class="row">
+                                            <div class="col-lg-12 text-center">
+                                                <!-- <button type="submit" class="btn btn-primary col-2 mr-2" (click)="modal.close('Save click')">Assign Gallery</button> -->
+                                                <!-- <a href="javascript:void(0)" class="btn btn-outline-primary col-2">Back</a> -->
+                                            </div>
+                                        </div>
+                            
+                                    </div>
+                                
+                            </main>
+                        </div>
+                        <div class="modal-footer">
+                          <!-- <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cancel</button> -->
+                          <button type="submit" class="btn btn-primary col-2 mr-2" (click)="modal.close('Save click')">Assign Gallery</button>
+                        </div>
+                    </form>
+                      </ng-template>
+                   </div>
+                   
+                   <div class="tab-pane fade {{this.tabEnabled==5? 'show active':''}}" id="confirm" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                     <form enctype="multipart/form-data" [formGroup]='previewForm' (ngSubmit)="createPreview()">
+                        <h4><strong>Preview page</strong></h4>
+                        <div class="row">
+                            <div class="form-group col-lg-6 inputDnD">
+                                <!-- <label>Upload Background Image / Video</label>
+                                <input type="file" class="form-control-file" id="inputFile5" accept="image/*" (change)="onFileSelect($event,'preview')" data-title="Drag your image/Video here e.g PNG, JPG, MPEG4">
+                            
+                                <span class="app-preview" *ngIf="(config.preview && config.preview.preview_file!='') || activeContent.preview">
+                                    <img [src]="fileurl+''+(config.preview && config.preview.preview_file!=''? config.preview.preview_file:'')" class="preview-preview" height="100" width="100">
+                                    <label>Preview</label>
+                                </span>
+                                <br><br> -->
+                                <label>Preview Page / Text</label>
+                                <input type="text" class="form-control" name="preview" formControlName="preview" placeholder="Enter Preview Text Here">
+                            </div>
+                        </div>
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                    </form>
+                   </div>
+                   
+                   <div class="tab-pane fade {{this.tabEnabled==6? 'show active':''}}" id="thanks-you" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                    <form enctype="multipart/form-data" [formGroup]='thankyouForm' (ngSubmit)="createThankYou()"> 
+                    <h4><strong>Thank You</strong></h4>
+ 
+                     <div class="row">
+                         <div class="form-group col-lg-6 inputDnD">
+                             <label>Upload Background Image / Video</label>
+                             <input type="file" class="form-control-file" id="inputFile6" accept="image/*" (change)="onFileSelect($event,'thankyou')" data-title="Drag your image/Video here e.g PNG, JPG, MPEG4">
+                            
+                             <span class="app-preview" *ngIf="(config.thankyou && config.thankyou.bg_thankyou_file!='') || activeContent.thankyou">
+                                <img [src]="fileurl+''+(config.thankyou && config.thankyou.bg_thankyou_file!=''? config.thankyou.bg_thankyou_file:'')" class="thankyou-preview" height="100" width="100">
+                                <label>Preview</label>
+                            </span>
+                            <br><br>
+ 
+                             <label>Add URL Redirect</label>
+                             <!-- <input type="text" class="form-control" name="redirect_url" formControlName='redirect_url' placeholder="www.____________________.com"> -->
+                             <textarea class="form-control" name="redirect_url" formControlName='redirect_url' placeholder="www.____________________.com" rows="5"></textarea>
+                            
+                             <br/>
+                            
+                         </div>
+                         <div class="form-group inputDnD mb-0">
+                            <label>Logo</label>
+                            <input type="file" class="form-control-file" id="inputFile2" accept="image/*" (change)="onFileSelect($event,'thankyoulogo')" data-title="Drag your image/Video here eg. PNG, JPG, MPEG4">
+                            <span class="app-preview" *ngIf="(config.thankyou && config.thankyou.logo_file_path!='') || activeContent.thankyou">
+                                <img [src]="fileurl+''+(config.thankyou && config.thankyou.logo_file_path!=''? config.thankyou.logo_file_path:'')" class="thankyoulogo-preview" height="100" width="100">
+                                <label>Preview</label>
+                            </span>
+                        </div>
+ 
+                         <div class="col-lg-6">
+                             <div class="form-group">
+                               <label class="d-block">Thank You message</label>
+                               <div class="form-check-inline ">
+                                   <label class="fom-check-label">
+                                     <input type="radio" class="form-check-input input" name="is_message" formControlName="is_message" value="1" >Yes
+                                   </label>
+                               </div>
+                               <div class="form-check-inline">
+                                   <label class="form-check-label">
+                                     <input type="radio" class="form-check-input" name="is_message" formControlName="is_message" value="0">No
+                                   </label>
+                               </div>
+                             </div>
+ 
+                             <div class="form-group">
+                               <textarea class="form-control" placeholder="Enter Thank You Message" rows="5" formControlName='message'></textarea>
+                             </div>
+ 
+                             <div class="form-group">
+                               <label class="d-block">Add Pickup Instructions</label>
+                               <div class="form-check-inline ">
+                                   <label class="form-check-label">
+                                     <input type="radio" class="form-check-input input" formControlName="is_pickup" name="is_pickup" value="1">Yes
+                                   </label>
+                               </div>
+                               <div class="form-check-inline">
+                                   <label class="form-check-label">
+                                     <input type="radio" class="form-check-input"  formControlName="is_pickup" name="is_pickup" value="0">No
+                                   </label>
+                               </div>
+                             </div>
+ 
+                             <div class="form-group">
+                               <textarea class="form-control" placeholder="Enter Pick Up Instructions" formControlName="pickup" rows="5"></textarea>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-lg-12">
+                            <input type="submit" class="btn btn-primary" value="Submit">
+                        </div>
+                     </div>
+                    </form>
+                   </div>
+ 
+                  <div class="tab-pane fade {{this.tabEnabled==7? 'show active':''}}" id="ui" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <form [formGroup]="uiForm" (ngSubmit)="createUi()">
+                        <h4><strong>Customize UI Appearance</strong></h4>
+    
+                        <div class="row cust-appearance">
+                            <div class="col-lg-4">
+                                <h6><strong>Choose Header color</strong><br><br></h6>
+    
+                                <div class="form-group">
+                                    <label>Header Background color</label>
+                                    <input type="color" class="form-control uiColor" name="tile_color" formControlName="tile_color">
+                                </div>
+    
+                                <h6><strong>Customized Buttons</strong></h6>
+                                <div class="form-group">
+                                    <label>Buttons Text Color</label>
+                                    <input type="color" class="form-control uiColor" name="button_text_color" formControlName="button_text_color">
+                                </div>
+                                <div class="form-group">
+                                    <label>Buttons Background Color</label>
+                                    <input type="color" class="form-control uiColor" name="button_bg_color" formControlName="button_bg_color">
+                                </div> 
+                                
+                                <h6><strong>Pop-ups & Highlights</strong></h6>
+                                <div class="form-group">
+                                    <label>Pop-up Box Color</label>
+                                    <input type="color" class="form-control uiColor" name="pop_up_color" formControlName="pop_up_color">
+                                </div>
+                                <div class="form-group">
+                                    <label>Selection Highlight</label>
+                                    <input type="color" class="form-control uiColor" name="sel_highlight" formControlName="sel_highlight">
+                                </div>   
+                                <div class="form-group">
+                                    <label>Body Text Color</label>
+                                    <input type="color" class="form-control uiColor" name="body_text_color" formControlName="body_text_color">
+                                </div>                           
+                            </div>
+    
+                            <div class="col-lg-4">
+                            <h6><strong>Change Product, Add Artwork, Add Text Toggle Color</strong></h6>
+                            
+                            <div class="form-group">
+                                    <label>Toggled Color</label>
+                                    <input type="color" class="form-control uiColor" name="toggle_color" formControlName="toggle_color">
+                                </div>
+                                <div class="form-group">
+                                    <label>Un-Toggled Color</label>
+                                    <input type="color" class="form-control uiColor" name="un_toggle_color" formControlName="un_toggle_color">
+                                </div> 
+    
+                                <h6><strong>Front | Back, Arrange Toggle Colors</strong></h6>
+                                <div class="form-group">
+                                    <label>Toggled Color</label>
+                                    <input type="color" class="form-control uiColor" name="front_back_toggle" formControlName="front_back_toggle">
+                                </div> 
+                            </div>  
+    
+                            <div class="col-lg-4">
+                                <h6><strong>Header Typeface</strong><br><br></h6>
+    
+                                <select class="form-control" name="header_typeface" formControlName="header_typeface">
+                                    <option value="0">Select typeface</option>
+                                    <option style="font-family: Arial;font-size: 15px;">Arial</option>
+                                    <option style="font-family: Times New Roman;font-size: 15px;">Times New Roman</option>
+                                    <option style="font-family: Monaco;font-size: 15px;">Monaco</option>
+                                    <option style="font-family: Brush Script MT;font-size: 15px;">Brush Script MT</option>
+                                    <option style="font-family: Comic Sans MS;font-size: 15px;">Comic Sans MS</option>
+                                    <option style="font-family: Trebuchet MS;font-size: 15px;">Trebuchet MS</option>
+                                    <option style="font-family: Verdana;font-size: 15px;">Verdana</option>
+                                    <option style="font-family: Old English Text MT;font-size: 15px;">Old English Text MT</option>
+                                    <option style="font-family: Copperplate;font-size: 15px;">Copperplate</option>
+                                    <option style="font-family: Didot;font-size: 15px;">Didot</option>
+                                    <option style="font-family: Perpetua;font-size: 15px;">Perpetua</option>
+                                    <option style="font-family: Garamond;font-size: 15px;">Garamond</option>
+                                    <option style="font-family: Optima;font-size: 15px;">Optima</option>
+                                    <option style="font-family: Papyrus;font-size: 15px;">Papyrus</option>
+                                </select>
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <input type="submit" class="btn btn-primary" value="Submit">
+                            </div>
+                         </div>
+                    </form>
+                   </div>
+               </div>
+           <!-- </div> -->
+       </div>
+ 
+    </div>
+ </main>

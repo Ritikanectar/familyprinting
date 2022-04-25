@@ -1,0 +1,106 @@
+<main role="main" id="main" class="main-wrapper">
+		<div class="container-fluid">
+			<div class="col-lg-4 p-4 offset-md-4 card rounded">
+				<form class="w-100" [formGroup]='userForm' (ngSubmit)='createUser()'>
+
+					<div class="row">
+						<div class="col-12 form-group">
+							<label class="d-block">User Type</label>
+							<select class="form-control" formControlName='user_type' [ngClass]="{ 'is-invalid': submitted && f.user_type.errors }">
+								<option value="">Select user type</option>
+								<option value="1">Admin (Full Access)</option>
+								<option value="2">Executive (Application Access)</option>
+								<option value="3">Manager (Event Manager Access Only)</option>
+								<option value="4">Staff</option>
+                            </select>
+                            <div *ngIf="submitted && f.user_type.errors" class="text-danger">
+                                <div *ngIf="f.user_type.errors.required">User Type is required</div>
+                            </div>
+						</div>	
+					</div>	
+
+					<div class="row">
+						<div class="col-12 form-group">
+							<label>Name</label>
+							<input type="text" class="form-control" formControlName='name' placeholder="Enter Name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+							<div *ngIf="submitted && f.name.errors" class="text-danger">
+								<div *ngIf="f.name.errors.required">Name is required</div>
+							</div>
+						</div>	
+					</div>	
+
+					<div class="row">
+						<div class="col-12 form-group">
+							<label>User Name</label>
+							<input type="text" class="form-control" formControlName='user_name' placeholder="Enter Username" [ngClass]="{ 'is-invalid': submitted && f.user_name.errors }">
+							<div *ngIf="submitted && f.user_name.errors" class="text-danger">
+								<div *ngIf="f.user_name.errors.required">User Name is required</div>
+							</div>
+						</div>
+                        
+                        <div class="col-12 form-group">
+							<label>Password</label>
+							<input type="password" class="form-control" formControlName='password' placeholder="Enter Password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+							<div *ngIf="submitted && f.password.errors" class="text-danger">
+								<div *ngIf="f.password.errors.required">Password is required</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">	
+						<div class="col-12 form-group">
+							<label>Email</label>
+							<input type="mail" class="form-control" formControlName='email' placeholder="Enter mail id" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+							<div *ngIf="submitted && f.email.errors" class="text-danger">
+								<div *ngIf="f.email.errors.required">Email is required</div>
+								<div *ngIf="f.email.errors.email">Please enter valid email address</div>
+							</div>
+						</div>
+					</div>		
+
+					<div class="row">
+						<div class="col-6 form-group">
+							<label>Contact</label>
+                            <input type="text" pattern="\d*" class="form-control" formControlName='contact' max="12" placeholder="(+1) 4585879" [ngClass]="{ 'is-invalid': submitted && f.contact.errors }">
+                            <div *ngIf="submitted && f.contact.errors" class="text-danger">
+                                <div *ngIf="f.contact.errors.required">Contact is required</div>
+                                <!-- <div *ngIf="f.contact.errors.min">Contact should be minimum 10 digit long</div> -->
+								<div *ngIf="f.contact.errors.pattern">Contact should be numeric</div>
+                                <div *ngIf="f.contact.errors.maxlength">Contact should not be more than 12 digit long</div>
+                            </div>
+						</div>	
+						<div class="col-6 form-group">
+							<label>Location</label>
+                            <input type="text" class="form-control" formControlName='location' placeholder="Los Angeles" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
+                            <div *ngIf="submitted && f.location.errors" class="text-danger">
+                                <div *ngIf="f.location.errors.required">Location is required</div>
+                            </div>
+						</div>
+					</div>				
+
+					<div class="row">
+						<div class="col-6">
+							<button type="submit" href="javascript:void(0)" class="btn btn-primary btn-block">Create</button>
+						</div>	
+						<div class="col-6">
+							<a href="javascript:void(0)" routerLink='/admin/user' class="btn btn-dark btn-block">Cancel</a>
+						</div>
+					</div>		
+				</form>
+			</div>      
+		</div>
+	</main>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-body text-center success-message">
+        <div class="py-5 px-1">
+            <div class="mb-3"><i class="fa fa-check-circle-o"></i></div>
+          <h4 class="mb-3">User Added Successfully</h4>  
+        </div>  
+      </div>
+      
+    </div>
+  </div>
+</div>

@@ -1,0 +1,194 @@
+<style>
+.input-container input {
+    border: none;
+    box-sizing: border-box;
+    outline: 0;
+    padding: .75rem;
+    position: relative;
+    width: 100%;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    right: 0;
+    top: 0;
+}
+</style>
+<!-- Begin page content -->
+<main role="main" class="main-wrapper" id="main">
+    <div class="container-fluid">
+        <div class="col-lg-4 p-4 offset-md-4 card rounded">
+            <form class="w-100" [formGroup]='eventForm' (ngSubmit)="createEvent()">
+                <!--<div class="row">
+                    <div class="col-12 form-group">
+                        <label class="d-block">Event Type</label>
+                        <div class="form-check-inline" *ngFor="let x of eventType | keyvalue; let i=index" formGroupName="event_type">
+                              <label class="form-check-label checkbox-info">
+                                <input type="checkbox" class="form-check-input input" [formControlName]="x.key" [value]="x.value">{{x.value}}
+                              </label>
+                        </div>
+                    </div>	
+                </div> -->
+
+                <div class="row">
+                    <div class="col-12 form-group">
+                        <label class="d-block">Event Type</label>
+                        <div class="form-check-inline" *ngFor="let x of eventType | keyvalue; let i=index">
+                              <label class="form-check-label checkbox-info">
+                                <input type="radio" class="form-check-input input" formControlName="event_type" [value]="x.value" checked>{{x.value}}
+                              </label>
+                        </div>
+                    </div>	
+                </div>
+
+                <div class="row">
+                    <div class="col-12 form-group">
+                        <label class="d-block">Event Title</label>
+                        <input type='text' class="form-control" formControlName="app_name" placeholder="Enter Event Name" [ngClass]="{ 'is-invalid': submitted && f.app_name.errors }">
+                        <div *ngIf="submitted && f.app_name.errors" class="invalid-feedback">
+                            <div *ngIf="f.app_name.errors.required">App Name is required</div>
+                        </div>
+
+                    </div>	
+                </div>
+
+                <div class="row">
+                    <div class="col-12 form-group">
+                        <label class="d-block">App Type</label>
+                        <select class="form-control" formControlName="app_type" value='' [ngClass]="{ 'is-invalid': submitted && f.app_type.errors }" >
+                            <option value="" selected>Select App Type</option>
+                            <option [value]="x" *ngFor="let x of appType">{{x}}</option>
+                        </select>
+                        <div *ngIf="submitted && f.app_type.errors" class="invalid-feedback">
+                            <div *ngIf="f.app_type.errors.required">App Type is required</div>
+                        </div>
+                    </div>	
+                </div>
+
+                <div class="row">
+                    <div class="col-12 form-group">
+                        <label class="d-block">Location</label>
+                        <input type='text' class="form-control" formControlName="location" placeholder="Enter Location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
+                        <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
+                            <div *ngIf="f.location.errors.required">Location is required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="d-block">Start Date</label>
+                            <input type="datetime-local" class="form-control" formControlName="start_date" [min]="today" (change)="maxLimit($event)" placeholder="Start Date" [ngClass]="{ 'is-invalid': submitted && f.start_date.errors }" >
+                            <div *ngIf="submitted && f.start_date.errors" class="invalid-feedback">
+                                <div *ngIf="f.start_date.errors.required">Start Date is required</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="d-block">End Date</label>
+                            <input type="datetime-local" class="form-control" formControlName="end_date" min="{{minDate}}" max="{{maxDate}}" placeholder="End Date" [ngClass]="{ 'is-invalid': submitted && f.end_date.errors }">
+                            <div *ngIf="submitted && f.end_date.errors" class="invalid-feedback">
+                                <div *ngIf="f.end_date.errors.required">End Date is required</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>		
+
+                <div class="row">
+                    <div class="col-12 form-group">
+                        <label class="d-block">Orientation</label>
+                        <div class="form-check-inline ">
+                              <label class="form-check-label">
+                                <input type="radio" class="form-check-input input"  formControlName="orientation" value="Portrait" checked>Portrait
+                              </label>
+                        </div>
+                        <div class="form-check-inline">
+                              <label class="form-check-label">
+                                <input type="radio" class="form-check-input"  formControlName="orientation" value="Landscape">Landscape
+                              </label>
+                        </div>
+                    </div>	
+                </div>
+                
+                <div class="row">
+                    <div class="col-12 form-group">
+                        <label class="d-block">Executive</label>
+                        <select class="form-control" formControlName="exec" value='' [ngClass]="{ 'is-invalid': submitted && f.exec.errors }">
+                            <option value="" selected>Select Executive</option>
+                            <option [value]="x.id" *ngFor="let x of executive">{{x.name}}</option>
+                        </select>
+                    
+                   <!-- 
+                    <ng-select [items]="executive"
+                            bindLabel="name"
+                            placeholder="Select Executive"
+                            appendTo="body"
+                            multiple="true"
+                            [(ngModel)]="exec"></ng-select>
+                    
+                    -->
+                        
+                    <div *ngIf="submitted && f.exec.errors" class="invalid-feedback">
+                        <div *ngIf="f.exec.errors.required">Please select Executive</div>
+                    </div>
+
+                    </div>	
+                </div>
+
+                <!-- <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">Stores</label>
+                    <select class="form-control" formControlName="stores" value='' [ngClass]="{ 'is-invalid': submitted && f.stores.errors }">
+                      <option value="" selected>Select Stores</option>
+                      <option [value]="x.storeId" *ngFor="let x of stores">{{x.storeName}}</option>
+                    </select>
+                    <div *ngIf="submitted && f.stores.errors" class="invalid-feedback">
+                      <div *ngIf="f.stores.errors.required">Please select store</div>
+                    </div>
+
+                  </div>
+                </div> -->
+
+                <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">Client</label>
+                    <input type="text" class="form-control" formControlName="client" placeholder="Client Name" [ngClass]="{ 'is-invalid': submitted && f.client.errors }">
+                    <div *ngIf="submitted && f.client.errors" class="invalid-feedback">
+                      <div *ngIf="f.client.errors.required">Client name is required</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 form-group">
+                      <label class="d-block">Order Prefix</label>
+                        <input type="text" class="form-control" formControlName="order_prefix" placeholder="Order Prefix" [ngClass]="{ 'is-invalid': submitted && f.order_prefix.errors }">
+                        <div *ngIf="submitted && f.order_prefix.errors" class="invalid-feedback">
+                          <div *ngIf="f.order_prefix.errors.required">Order prefix is required</div>
+                        </div>
+                    </div>	
+                </div>
+
+                <div style="text-align:center;color:green;">{{massage}}</div>
+                <br/>
+                <div class="row">
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-primary btn-block">Create</button>
+                    </div>	
+                    <div class="col-6">
+                        <a href="javascript:void(0)" routerLink="/admin/event" class="btn btn-dark btn-block">Cancel</a>
+                    </div>
+                </div>		
+            </form>
+        </div>      
+    </div>
+</main>

@@ -1,0 +1,94 @@
+<main role="main" id="main" class="main-wrapper">
+    <div class="container-fluid table-page text-center">
+
+        <!-- <div class="row">
+         <div class="col-lg-6 col-6  text-left">
+            <div class="form-row">
+               <div class="form-group col-md-4">
+                  <input type="name" class="form-control" id="inputfirst" placeholder="Search by user">
+               </div>
+            </div>
+        </div> -->
+        
+         <!-- <div class="col-lg-6 col-6 text-right">
+            <div class="form-row flex-row-reverse">
+                <div class="form-group col-md-4">
+                  <select id="inputState" class="form-control">
+                     <option selected="">Export as PDF</option>
+                     <option>Export as Excel</option>
+                  </select>
+               </div>
+               
+               <div class="form-group col-md-2">
+                  <li class="nav-item dropdown" style="list-style-type: none;">
+                     <a class="nav-link dropdown-toggle" id="filterDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/img/icons/filter.png" class="user-circle" width="20px" alt=""></a>
+                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filterDropdown">
+                        <a class="dropdown-item small" href="#"><span class="ml-2"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked></span>Not configured</a>
+                        <a class="dropdown-item small" href="#"><span class="ml-2"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" ></span>Configured</a>
+                     </div>
+                  </li>
+               </div>       
+            </div>
+         </div>
+      </div> -->
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="bg-white p-4 rounded text-left box-shadow-md table-responsive">
+            <table id="tablePreview" datatable [dtOptions]="dtOptions" class="table small table-hover">
+              <!--Table head-->
+                <thead>
+                  <tr>
+                    <th>Event Name</th>
+                    <th>Event Type</th>
+                    <th>App Type</th>
+                    <th>Event Created</th>
+                    <th>Client Name</th>
+                    <th>App Status</th>
+                    <!-- <th>App link</th> -->
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="appData?.length">
+                  <tr *ngFor="let app of appData; let i=index; let last = last">
+                    <td>{{app.app_name}}</td>
+                    <td>{{app.event_type}}</td>
+                    <td>{{app.app_type}}</td>
+                    <td>{{app.created_date}}</td>
+                    <td>{{app.client_name}}</td>
+                    <td>
+                        <span class="text-info" *ngIf="app.wl_id && app.rg_id && app.pr_id && app.pd_id && app.pv_id && app.ty_id && app.ui_id; else notConfig">Configured</span>
+                        <ng-template #notConfig>
+                            <span class="text-danger" *ngIf="app.wl_id==null && app.rg_id==null && app.pr_id==null && app.pd_id==null && app.pv_id==null && app.ty_id==null && app.ui_id==null; else prtialConfig">Not Configured</span>
+                        </ng-template>
+                        <ng-template #prtialConfig>
+                            <span class="text-danger" *ngIf="app.wl_id==null || app.rg_id==null || app.pr_id==null || app.pd_id==null || app.pv_id==null || app.ty_id==null || app.ui_id==null">Partially Configured</span>
+                        </ng-template>
+                    </td>
+                    <!-- <td>
+                      <a href="{{app.link}}" target="__change">Visit App</a>
+                    </td> -->
+                    <td>
+                      <ng-template #configured>
+                        <a href="javascript:void(0)" title="Edit" class="btn btn-success text-white btn-sm  m-1" routerLink="/admin/new-app/{{app.event_id}}/0">
+                          <i class="fa fa-pencil"></i>
+                        </a>
+                    </ng-template>
+                        <a href="{{app.link}}" target="__change" class="btn btn-primary btn-sm m-1" data-toggle="modal" data-target="#exampleModalCenter" title="Visit Site"><i class="fa fa-eye"></i></a>
+                        <a href="javascript:void(0)" title="Configure" class="btn btn-danger text-white btn-sm m-1" routerLink="/admin/new-app/{{app.event_id}}/{{(app.wl_id==null)? 1:(app.rg_id==null? 2:(app.pr_id==null? 3:(app.pd_id==null? 4:(app.pv_id==null? 5:(app.ty_id==null? 6:(app.ui_id==null? 7:0))))))}}" *ngIf="app.wl_id==null || app.rg_id==null || app.pr_id==null || app.pd_id==null || app.pv_id==null || app.ty_id==null || app.ui_id==null; else configured">
+                          <i class="fa fa-pencil"></i>
+                        </a>
+                        
+                        <a href="{{url+'get-order-xml?event='+app.event_id}}" target="__change" class="btn btn-primary btn-sm m-1" title="XML Data">
+                          <i class="fa fa-file-code-o"></i>
+                        </a>
+                    </td>
+                  </tr>
+                </tbody>
+                <!--Table body-->
+              </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>

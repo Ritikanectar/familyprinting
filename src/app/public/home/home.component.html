@@ -1,0 +1,56 @@
+  <div class="contanier-fluid main-wrapper">
+    <div id="outer" style="z-index: 999999999999;">
+      <div *ngIf='pageLoaded' id="table-container">
+          <div id="table-cell" class=" get-started">
+            <img *ngIf="layout.logo_image!=''" [src]="layout.logo_image" class="img-fluid">
+            <!-- <h2 class="heading">{{layout.welcome_title}}</h2>
+            <p class="">{{layout.welcome_desc}}</p> -->
+            <p class="" class="mt-5">
+              <a href="javascript:void(0)" routerLink="/registration/{{evid}}/{{user}}">
+                <button class="btn btn-primary btn-lg" routerLink="/registration/{{evid}}/{{user}}"
+                [style]="{'color':layout.button_text_color!=''? layout.button_text_color:'',
+                'background-color': layout.button_bg_color!=''? layout.button_bg_color:'',
+                'border-radius':layout.btn_radius_topleft+'px '+layout.btn_radius_topright+'px '+layout.btn_radius_botright+'px '+layout.btn_radius_botleft+'px'}"
+                >{{layout.button_text}}</button>
+              </a>
+            </p>
+          </div>
+      </div>
+  </div>
+
+  <!-- <div id="outer" style="z-index: 999999999999;">
+    <div id="table-container">
+        <div id="table-cell" class=" get-started">
+          <h2 class="heading"></h2>
+          <p class=""></p> --
+          <img *ngIf="layout.logo_image!=''" [src]="layout.logo_image" class="img-fluid">
+          <p *ngIf="pageLoaded" class="mt-5">
+            <a href="javascript:void(0)" routerLink="/home/{{evid}}/{{user}}">
+              <button class="btn btn-primary btn-lg" [style]="{'color':layout.button_text_color!=''? layout.button_text_color:'',
+              'background-color': layout.button_bg_color!=''? layout.button_bg_color:'',
+              'border-radius':layout.btn_radius_topleft+'px '+layout.btn_radius_topright+'px '+layout.btn_radius_botright+'px '+layout.btn_radius_botleft+'px'}" 
+              routerLink="/home/{{evid}}/{{user}}">
+                {{layout.button_text}}
+              </button>
+            </a>
+          </p>
+        </div>
+    </div>
+</div> -->
+
+
+
+
+
+
+
+  <div *ngIf='pageLoaded' class="row">
+    <img *ngIf="layout.bg_image!='' && (layout.bg_file_extention=='jpg' || layout.bg_file_extention=='jpeg' || layout.bg_file_extention=='gif' || layout.bg_file_extention=='png'); else noneBg" [src]="layout.bg_image" class="full-video">
+    <ng-template #noneBg>
+      <div class="full-video" style="background-color: #2D2C2C;"></div>
+        </ng-template>
+    </div>
+    <video autoplay playsinline muted loop id="myVideo" width="100%" style="height: 100% !important;overflow-y: none !important;" oncanplay="this.play()" onloadedmetadata="this.muted = true" *ngIf="layout.bg_file_extention=='mp4' || layout.bg_file_extention=='avi' || layout.bg_file_extention=='mpeg4'">
+        <source [src]="layout.bg_image" type="video/mp4">
+    </video>
+</div>

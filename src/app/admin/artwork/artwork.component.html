@@ -1,0 +1,87 @@
+<style>
+    .modal-body{ height: 300px; }
+</style>
+<main role="main" id="main" class="main-wrapper">
+    <div class="container-fluid">
+
+  <div class="row">
+    <div class="col-lg-12 mb-3">
+        <h4 class="d-inline"><strong>{{galleryName}}</strong></h4>
+        <a href="javascript:void(0)" class="btn btn-primary pull-right" routerLink="/admin/create-artwork/{{gallery}}">Add Artwork</a>
+    </div>
+  </div>  
+  
+    <div class="row gallery-view" *ngIf="cliparts.length>0;else elseBlock">
+        <div class="col-md-2 col-sm-6 mb-4" *ngFor="let x of cliparts">
+            <div class="gallery-box">
+                <img src="{{'/assets/uploads/'+x.artwork_image}}" class="img-fluid">
+
+                <!-- <p class="art-title">{{x.title}}</p> -->
+                <!-- <div class="bg-light d-flex" style="justify-content:center;">
+                    <a href="javascript:void(0)" class="btn btn-primary btn-block" (click)="deleteArtwork(x.artwork_id)">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                    <a href="javascript:void(0)" (click)="open(mymodal,x.artwork_id)" class="btn btn-danger  btn-block text-white"><i class="fa fa-refresh"></i></a>
+                </div> -->
+                <div class="btn-group btn-group-toggle w-100">
+                        <a href="javascript:void(0)" class="btn btn-primary btn-block" (click)="deleteArtwork(x.artwork_id)">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                   
+                        <a href="javascript:void(0)" (click)="open(mymodal,x.artwork_id)" class="btn btn-danger  btn-block text-white mt-0"><i class="fa fa-refresh"></i></a>
+                    <!-- </label> -->
+                  </div>
+            </div>
+        </div>
+      </div>
+      <ng-template class="row gallery-view" #elseBlock>
+        <h4 style="text-align: center;padding: 50px;border: 1px solid #2d2c2c;" class="noData">
+            <img src="/assets/img/loading.gif" height="80" width="80">
+            Loading...
+        </h4>
+      </ng-template>
+
+      <div class="row">
+          <div class="col-lg-12 text-center">
+              <a href="javascript:void(0)" routerLink="/admin/gallery" class="btn btn-outline-primary col-2">Back</a>
+          </div>
+      </div>
+    
+      <ng-template #mymodal let-modal style="max-width: 1000px;">
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Replace Artwork</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <form enctype="multipart/form-data" [formGroup]="artworkForm" (ngSubmit)="replaceArtwork()">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                    <div class="form-group">
+                        <label>New Artwork</label>
+                        <div class="col-12">
+                            <div class="form-group inputDnD" style="height: 100px;">
+                            <label>Upload Image</label>
+                            <input type="file" class="form-control-file" id="inputFile" name="bgimage" accept="image/*" (change)="onFileSelectReplace($event)" data-title="Drag your image here eg. PNG">
+                            </div>
+                        </div>
+                        <br/><br/>
+                        <div class="col-12" *ngIf="preview">
+                            <img src="{{appurl}}" class="frontblock" height="60" width="60">
+                        </div>
+                        <!-- <div *ngIf="product_type_error" class="invalid-feedback">
+                        <div style="color:red">Please Select Product Type</div>
+                        </div> -->
+                    </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-outline-dark"><i class="fa fa-pencil"></i> Replace </button>
+            </div>
+        </form>
+    </ng-template>
+
+    </div>
+</main>

@@ -1,0 +1,228 @@
+<style>
+
+</style>
+<!-- Begin page content -->
+<main role="main" *ngIf="pageLoaded" class="">
+  <div class="container-fluid">
+    <div class="row">
+      <img *ngIf="layout.bg_image!='' && (layout.bg_file_extention=='jpg' || layout.bg_file_extention=='jpeg' || layout.bg_file_extention=='gif' || layout.bg_file_extention=='png'); else noneBg" [src]="layout.bg_image" class="full-video">
+      <ng-template #noneBg>
+        <div class="full-video" style="background-color: #2D2C2C;"></div>
+      </ng-template>
+    </div>
+    <video autoplay playsinline muted loop id="myVideo" width="100%" style="height: 100% !important;overflow-y: none !important;" oncanplay="this.play()" onloadedmetadata="this.muted = true" *ngIf="layout.bg_file_extention=='mp4' || layout.bg_file_extention=='avi' || layout.bg_file_extention=='mpeg4'">
+      <source [src]="layout.bg_image" type="video/mp4">
+    </video>
+
+    <div id="outer" style="z-index: 1020;">
+      <div id="table-container" style="width:40%;">
+        <div id="table-cell">
+
+          <div class="p-4" *ngIf="layout.data_collected==0;else data_collected" style="background:rgb(56,56,57,0.5);margin-top: 20px !important;color:#ffffff">
+
+            <form class="login-form mt-auto" [formGroup]="regForm" (ngSubmit)="register()">
+              <h2 class="mb-4 heading" style="color: #ffffff">{{layout.header_title}}</h2>
+              <div class="form-row">
+                <div class="form-group col" *ngIf="layout.is_first_name && layout.is_first_name==1">
+                  <label> First Name </label>
+                  <input type="text" class="form-control" id="inputfirst" placeholder="First name" formControlName="first_name" [ngClass]="{ 'is-invalid': submitted && f.first_name.errors }">
+                  <div *ngIf="submitted && f.first_name.errors" class="text-danger">
+                    <div *ngIf="f.first_name.errors.required">First Name is required</div>
+                    <!-- <div *ngIf="f.contact.errors.min">Contact should be minimum 10 digit long</div> -->
+                    <!-- <div *ngIf="f.contact.errors.pattern">Contact should be numeric</div>
+        <div *ngIf="f.contact.errors.maxlength">Contact should not be more than 12 digit long</div> -->
+                  </div>
+                </div>
+                <div class="form-group col" *ngIf="layout.is_last_name && layout.is_last_name==1">
+                  <label> Last Name </label>
+                  <input type="text" class="form-control" id="inputlast" placeholder="Last name" formControlName="last_name" [ngClass]="{ 'is-invalid': submitted && f.last_name.errors }">
+                  <div *ngIf="submitted && f.last_name.errors" class="text-danger">
+                    <div *ngIf="f.last_name.errors.required">Last Name is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="layout.is_email && layout.is_email==1">
+                <label> Email </label>
+                <input type="email" class="form-control" id="inputEmail2" placeholder="Email" formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+                <div *ngIf="submitted && f.email.errors" class="text-danger">
+                  <div *ngIf="f.email.errors.required">Email is required</div>
+                  <div *ngIf="f.email.errors.email">Email should be in proper format</div>
+                </div>
+              </div>
+              <div class="form-group " *ngIf="layout.is_phone && layout.is_phone==1">
+                <label>Phone No</label>
+                <input type="text" class="form-control" id="inputcontact4" placeholder="Phone No" formControlName="phone" [ngClass]="{ 'is-invalid': submitted && f.phone.errors }">
+                <div *ngIf="submitted && f.phone.errors" class="text-danger">
+                  <div *ngIf="f.phone.errors.required">Phone number is required</div>
+                  <div *ngIf="f.phone.errors.pattern">Phone number should be numeric</div>
+                  <div *ngIf="f.phone.errors.maxlength">Phone number should not be more than 12 digit long</div>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="layout.is_address_1 && layout.is_address_1==1">
+                <label>Address 1</label>
+                <input type="text" class="form-control" id="inputAddress" placeholder="Address 1" formControlName="address_1" [ngClass]="{ 'is-invalid': submitted && f.address_1.errors }">
+                <div *ngIf="submitted && f.address_1.errors" class="text-danger">
+                  <div *ngIf="f.address_1.errors.required">Address is required</div>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="layout.is_address_2 && layout.is_address_2==1">
+                <label>Address 2</label>
+                <input type="text" class="form-control" id="inputAddress2" placeholder="Address 2" formControlName="address_2">
+              </div>
+              <div class="form-row">
+                <div class="form-group col" *ngIf="layout.is_city && layout.is_city==1">
+                  <label>City</label>
+                  <input type="text" class="form-control" id="inputCity" placeholder="City" formControlName="city" [ngClass]="{ 'is-invalid': submitted && f.city.errors }">
+                  <div *ngIf="submitted && f.city.errors" class="text-danger">
+                    <div *ngIf="f.city.errors.required">City is required</div>
+                  </div>
+                </div>
+                <!--<div class="form-group col-md-3">
+      <select id="inputState" class="form-control">
+        <option selected>CA</option>
+        <option>LA</option>
+        <option>NYC</option>
+      </select>
+    </div> -->
+                <div class="form-group col" *ngIf="layout.is_zip && layout.is_zip==1">
+                  <label>Zip</label>
+                  <input type="text" class="form-control" id="inputZip" placeholder="Zip" formControlName="zip" [ngClass]="{ 'is-invalid': submitted && f.zip.errors }">
+                  <div *ngIf="submitted && f.zip.errors" class="text-danger">
+                    <div *ngIf="f.zip.errors.required">Zip is required</div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="gridCheck">
+      <label class="form-check-label" for="gridCheck"> Check me out</label>
+    </div>
+  </div> -->
+              <div class="row" style="padding-left: 34px;" *ngIf="layout.is_terms_conditions && layout.is_terms_conditions==1">
+                <input type="checkbox" name="term_cond" id="term_cond" value="true" class="small form-check-input input" style="margin-top: 11px;">
+                <label for="term_cond" class="small mt-2">By clicking here, you agree to our <a href="javascript:void(0)" style="color: #00b3e5;" (click)="open(mymodal)">Terms & Conditions</a></label>
+              </div>
+
+              <button class="btn btn-primary btn-lg btn-block regbtn" type="submit" [ngStyle]="{'background-color':layout.button_color}">{{layout.button_text}}</button>
+
+
+            </form>
+
+            <ng-template #mymodal let-modal style="max-width: 1000px;z-index: 1040!important;">
+              <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">Terms & Conditions</h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <!-- <h4 class="text-dark text-center"><strong>Terms & Conditions</strong></h4> -->
+                <p>{{layout.terms_conditions}}</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')"> Done </button>
+              </div>
+            </ng-template>
+
+            <!-- <form class="login-form mt-auto " action="index.html">
+          <h2 class="mb-4 heading">Login to Family Industries</h2>
+          <div class="login-wrap">
+            <div class="input-group mb-3">
+              <span class="input-group-addon"><i class="icon_profile"></i></span>
+              <input type="text" class="form-control" placeholder="Enter registerd email" autofocus>
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-addon"><i class="icon_key_alt"></i></span>
+              <input type="password" class="form-control" placeholder="Enter password">
+            </div>
+            <label class="checkbox">
+                    <input type="checkbox" value="remember-me"> Remember me
+                    <span class="pull-right"> <a href="#"> Forgot Password?</a></span>
+               </label>
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>
+          </div>
+        </form>
+        </div> -->
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+          <ng-template #data_collected>
+
+            <div id="outer" style="z-index: 1020;">
+              <div id="table-container">
+                <div id="table-cell">
+
+            <div class="container">
+              <div class="row" style="height: 100vh;">
+                <div class="col-lg-12" style="margin:auto;">
+                  <div class="form-group row d-flex justify-content-center">
+                    <h2 class="mb-4 heading col-12 text-center" style="color: #ffffff">{{layout.header_title}}</h2>
+                    
+                    <div class=" col-lg-6">
+                        <input type="text" class="form-control" placeholder="Email" [(ngModel)]="search" style="height: 41px;">
+                        <p [ngStyle]="{'color':layout.button_color}" class="text-center">{{searchMsg}}</p>
+                    </div> 
+                    <!-- <button class="btn btn-primary btn-lg col-lg-2 pl-0" (click)="getExistCustomers()">Search</button> -->
+                  </div>
+                  <!-- <div class="row">
+                    <div class="col-lg-12 table-responsive  bg-white px-0 mb-3" style="height:auto; overflow-y: scroll;">
+                      <table class="table ">
+                        <thead>
+                          <tr>
+                            <th><strong>Visitor Name</strong></th>
+                            <th><strong>Email</strong></th>
+                            <th><strong>Contact</strong></th>
+                            <th><strong>Location</strong></th>
+                            <th><strong>Select</strong></th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="existCustomers.length>0;else noExistCustomers">
+                          <tr *ngFor="let x of existCustomers">
+                            <td>{{x.first_name+' '+x.last_name}}</td>
+                            <td>{{x.email}}</td>
+                            <td>{{x.contact}}</td>
+                            <td>{{x.address_1}}</td>
+                            <td>
+                              <div class="form-check-inline ">
+                                <label class="fom-check-label">
+                                  <input type="radio" class="form-check-input input" name="customerId" [(ngModel)]="customerId" [value]="x.reg_id">
+                                </label>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                        <ng-template #noExistCustomers>
+                          <tr>
+                            <td colspan="5">
+                              <p class="text-center">{{searchMsg}}</p>
+                            </td>
+                          </tr>
+                        </ng-template>
+                      </table>
+                    </div>
+                  </div> -->
+
+                  <div class="row">
+                    <div class="col-lg-12 text-center">
+                      <button type="button" class="btn btn-primary btn-lg" (click)="goToProducts()">PROCEED TO   CUSTOMIZATION</button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+          </ng-template>
+
+        </div>
+</main>

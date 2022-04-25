@@ -1,0 +1,87 @@
+<main role="main" style="overflow-y: scroll;">
+    <!-- <h2 class="mt-2 text-center">Confirm Order</h2> -->
+    <div class="container-fluid py-5 choose-product">
+      <div class="card">
+        <div class="col-md-12 p-3  text-dark">
+          <div class="row">
+            <div class="col-md-9">
+            <h2 class="productHeading"><strong>Order Reciept</strong></h2>
+          <div>
+            <label for="cust"><strong>Order: </strong> <span>{{urldata.orderNum}}</span></label> 
+          </div>
+          <div>
+            <label for="cust"><strong>Customer Name: </strong> <span>{{user.first_name+' '+user.last_name}}</span></label> 
+          </div>
+          <div>
+            <label for="cust"><strong>Email: </strong> <span>{{user.email}}</span></label> 
+          </div>
+          <div>
+            <label for="cust"><strong>Item: </strong> <span>{{product.prod_type}}</span></label> 
+          </div>
+          <div class="mb-0">
+            <label for="cust"><strong>Size: </strong> <span>{{urldata.productSize}}</span></label> 
+          </div>
+        </div>  
+          <div class="col-md-3 my-auto">
+          <a href="javascript:void(0)" class="btn btn-primary btn-block mb-2 productlargebtn  btn-lg mr-2" (click)="createOrder()">Complete Order</a>
+          <a href="javascript:void(0)" (click)="printReciept()" class="btn btn-outline-primary productlargebtn btn-lg btn-block">Print Recipt</a>
+        </div>
+        </div>
+        </div>
+      </div>
+      <div class="row"> 
+        <div class="col-md-6 mb-5 py-3 bg-light" *ngIf="(print.front && print.front.length>0) || (fonts.front && fonts.front.length>0)" style="position: relative;">
+          <!-- <h4 class="text-dark text-center"><strong>Item Preview</strong></h4> -->
+          <div class="bg-white text-center card" *ngFor="let img of productImg">
+            <img *ngIf="img.frontview_file!=''" src="{{appurl+img.frontview_file}}" class="choose-pro-img" width="100%" height="auto" style="margin: 0 auto;">
+            <div *ngIf="img.frontview_file!=''" style="position: absolute; left: 0; right: 0; top:123px; bottom:0; margin: 0 auto;" [ngStyle]="{'width':this.product.canvas_front_width+'px','height':this.product.canvas_front_height+'px'}">
+              <div style="position: relative;">
+
+                <div *ngFor="let pr of print.front">
+                  <div id="front" [innerHtml]="getHtml(pr.svg,'front')"></div>
+                </div>
+                <!-- <div *ngFor="let pr of print.front">
+                      <img src="{{pr.clipart}}" width="{{pr.width}}" height="{{pr.height}}"[ngStyle]="{'top': pr.top_pos+'px','left': (pr.left_pos)+'px','position':'absolute', 'z-index': pr.z_index,'transform':'rotate(-'+pr.rotate+'deg)'}">
+                  </div>
+                  <div *ngFor="let ft of fonts.front" >
+                    <label [ngStyle]="{'top': ft.top_pos+'px','width':ft.width+'px','left': (ft.left_pos)+'px','position':'absolute','color':ft.color,'font-family':ft.family,'font-weight':ft.weight,'font-size':ft.size+'px','letter-spacing':ft.Spacing}">
+                      {{ft.text}}
+                    </label>
+                  </div>-->
+
+              </div> 
+            </div>
+          </div>
+        </div> 
+        
+        <div class="col-md-6 mb-5 py-3 bg-light" *ngIf="(print.back && print.back.length>0) || (fonts.back && fonts.back.length>0)">
+          <div *ngFor="let img of productImg" class="bg-white text-center card" style="position: relative;">
+            <img *ngIf="img.backview_file!=''" src="{{appurl+img.backview_file}}"  class="choose-pro-img" width="100%" height="auto" style="margin: 0 auto;">
+            <div *ngIf="img.backview_file!=''" style="position: absolute; left: 0; right: 0; top:22%; bottom:10%; margin: 0 auto;" [ngStyle]="{'width':this.product.canvas_back_width+'px','height':this.product.canvas_back_height+'px'}">
+                <div style="position: relative;">
+                  <div *ngFor="let pr of print.back">
+                    <div id="back" [innerHtml]="getHtml(pr.svg,'back')"></div>
+                  </div>
+                    <!--<div *ngFor="let pr of print.back" >
+                    <img src="{{pr.clipart}}" width="{{pr.width}}" height="{{pr.height}}"[ngStyle]="{'top': pr.top_pos+'px','left': (pr.left_pos)+'px','position':'absolute', 'z-index': pr.z_index,'transform':'rotate(-'+pr.rotate+'deg)'}">
+                    </div>
+                    <div *ngFor="let ft of fonts.back" >
+                      <label [ngStyle]="{'top': ft.top_pos+'px','width':ft.width+'px','left': (ft.left_pos)+'px','position':'absolute','color':ft.color,'font-family':ft.family,'font-weight':ft.weight,'font-size':ft.size+'px','letter-spacing':ft.Spacing}">
+                        {{ft.text}}
+                      </label>
+                    </div>-->
+                </div> 
+            </div>
+          </div>
+        </div>
+        <!-- <div class="col-lg-4 col-md-4 col-xs-12">
+          <div class="box bg-white m-2">
+            <img src="assets/img/jersey555.jpg" alt=""> 
+          </div>
+        </div> -->
+      </div>
+      <!-- <div class="text-md-center next-btn mt-4 mb-4">
+        <a href="javascript:void(0)" class="btn btn-primary btn-lg">Confirm/Place Order</a>
+      </div> -->
+    </div>
+</main>

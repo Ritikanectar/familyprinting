@@ -1,0 +1,165 @@
+<style>
+  .prie-img-prod {
+    /* border: #000 solid 1px; */
+    text-align: center;
+    width: 700px;
+    margin: 0 auto;
+    height: 84.5vh;
+    top: 23px;
+}
+</style>
+<main role="main" id="main" class="main-wrapper">
+    <div class="container-fluid table-page text-center">
+
+        <div class="row">
+         <!-- <div class="col-lg-6 col-6  text-left">
+            <div class="form-row">
+               <div class="form-group col-md-4">
+                  <input type="name" class="form-control" id="inputfirst" placeholder="Search">
+               </div>
+            </div>
+        </div> -->
+        
+         <div class="col-lg-6 col-6 text-right">
+            <div class="form-row flex-row-reverse">
+                <!-- <div class="form-group col-md-4">
+                  <select id="inputState" class="form-control">
+                     <option selected="">Export as PDF</option>
+                     <option>Export as Excel</option>
+                  </select>
+               </div> -->
+               
+               <div class="form-group col-md-2">
+                  <!-- <li class="nav-item dropdown" style="list-style-type: none;">
+                     <a class="nav-link dropdown-toggle" id="filterDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/img/icons/filter.png" class="user-circle" width="20px" alt=""></a>
+                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filterDropdown">
+                        <a class="dropdown-item small" href="#"><span class="ml-2"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked></span>Not configured</a>
+                        <a class="dropdown-item small" href="#"><span class="ml-2"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" ></span>Configured</a>
+                     </div>
+                  </li> -->
+               </div>       
+            </div>
+         </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="bg-white p-4 rounded text-left box-shadow-md table-responsive">
+            <div class="col-md-3 row clearfix">
+              <select class="form-control" id="eventfilter" (change)="eventFilter()">
+                <option value="">Select Event</option>
+                <option *ngFor="let x of events" [value]="x.app_name">{{x.app_name}}</option>
+              </select>
+            </div>
+            <br/><br/>
+            <table id="tablePreview" datatable [dtOptions]="dtOptions" class="table small table-hover">
+              <!--Table head-->
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Event Name</th>
+                    <th>Product</th>
+                    <th>Client</th>
+                    <th>Client Email</th>
+                    <th>Order Status</th>
+                    <th>Order Date</th>
+                    <th>Action</th>
+                    <!-- <th>Actions</th> -->
+                  </tr>
+                </thead>
+                <tbody *ngIf="printData?.length">
+                  <tr *ngFor="let pr of printData; let i=index; let last = last">
+                    <td>{{pr.reciept_id}}</td>
+                    <td>{{pr.app_name}}</td>
+                    <td>{{pr.product_name}}</td>
+                    <td>{{pr.first_name+' '+pr.last_name}}</td>
+                    <td>{{pr.email}}</td>
+                    <td>{{pr.status}}</td>
+                    <td>{{pr.created_date}}</td>
+                    <td>
+                        <a href="javascript:void(0)" class="btn btn-primary btn-sm text-white" title="View Printing Design" (click)="open(mymodal,pr)"><i class="fa fa-eye"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+                <!--Table body-->
+              </table>
+
+              <ng-template #mymodal let-modal>
+                <div class="modal-header pdf-print-none">
+                  <h4 class="modal-title test" id="modal-basic-title">Preview</h4>
+                  <button type="button" class="close " aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body px-0">
+                  <div class="">
+                    <div class="col-lg-12 text-center">
+                      <a class="btn btn-primary" href="{{url+'get-design-pdf?order='+urldata.order_id}}"><i class="fa fa-file-pdf-o"></i> PDF</a>
+
+                      <!--<div *ngFor="let pr of print.front">
+                        <a class="btn btn-primary" href="{{pr.pdf}}" target="_change"><i class="fa fa-file-png-o"></i> Front PNG</a>
+                      </div>
+                      <div *ngFor="let pr of print.back">
+                        <a class="btn btn-primary" href="{{pr.pdf}}" target="_change"><i class="fa fa-file-png-o"></i> Back PNG</a>
+                      </div>-->
+
+                    </div>
+                    <!-- <h4 class="text-dark text-center"><strong>Item Preview</strong></h4> -->
+                    <div class="prie-img-prod col-6" *ngIf="(print.front && print.front.length>0) || (fonts.back && fonts.back.length>0)" style="position: relative;float:left;">
+
+                      <div *ngFor="let img of productImg">
+
+                        <img *ngIf="img.frontview_file!=''" src="{{appurl+img.frontview_file}}" class="choose-pro-img" width="100%" height="auto">
+                        <div class="frontimgdiv" *ngIf="img.frontview_file!=''"  [ngStyle]="{'width':this.orderProp.canvas_front_width+'px','height':this.orderProp.canvas_front_height+'px','top':this.sizeArr.frontcsstop+'px','left':this.sizeArr.frontcssleft+'px','position':'absolute','bottom':0,'margin': '0 auto'}">
+                          <div style="position: relative;">
+                            <div *ngFor="let pr of print.front">
+                              <div id="front" [innerHtml]="getHtml(pr.svg,'front')"></div>
+                            </div>
+                            <!--<div *ngFor="let pr of print.front">
+    <img src="{{pr.clipart}}" width="{{pr.width}}" height="{{pr.height}}" [ngStyle]="{'top': pr.top_pos+'px','left': (pr.left_pos)+'px','position':'absolute','z-index':pr.z_index,'transform':'rotate(-'+pr.rotate+'deg)'}">
+  </div>
+  <div *ngFor="let ft of fonts.front">
+    <label [ngStyle]="{'line-height':1,'top': (ft.top_pos+20)+'px','width':ft.width+'px','left': (ft.left_pos)+'px','position':'absolute','color':ft.color,'font-family':ft.family,'font-weight':ft.weight,'font-size':ft.size+'px','letter-spacing':ft.Spacing}">
+      {{ft.text}}
+    </label>
+  </div>-->
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="prie-img-prod  col-6" *ngIf="(print.back && print.back.length>0) || (fonts.back && fonts.back.length>0)" style="position: relative;float:right;">
+
+                      <div *ngFor="let img of productImg">
+                        <img *ngIf="img.backview_file!=''" src="{{appurl+img.backview_file}}" class="choose-pro-img" width="100%" height="auto" style="margin: 0 auto;">
+                        <div *ngIf="img.backview_file!=''"  [ngStyle]="{'width':this.orderProp.canvas_back_width+'px','height':this.orderProp.canvas_back_height+'px','top':this.sizeArr.backcsstop+'px','left':this.sizeArr.backcssleft+'px','position':'absolute','bottom':0,'margin': '0 auto'}">
+                        <!-- <div *ngIf="img.backview_file!=''" style="position: absolute; right: 0; bottom: 0; margin: 0 auto;" [ngStyle]="{'width':this.orderProp.canvas_back_width+'px','height':this.orderProp.canvas_back_height+'px','top':this.sizeArr.backcsstop+'px','left':this.sizeArr.backcssleft+'px'}"> -->
+                          <div style="position: relative;">
+                            <div *ngFor="let pr of print.back">
+                              <div id="back" [innerHtml]="getHtml(pr.svg,'back')"></div>
+                            </div>
+                            <!--<div *ngFor="let pr of print.back">
+    <img src="{{pr.clipart}}" width="{{pr.width}}" height="{{pr.height}}" [ngStyle]="{'top': pr.top_pos+'px','left': (pr.left_pos)+'px','position':'absolute','z-index':pr.z_index,'transform':'rotate(-'+pr.rotate+'deg)'}">
+  </div>
+  <div *ngFor="let ft of fonts.back">
+    <label [ngStyle]="{'line-height':1,'top': (ft.top_pos+20)+'px','width':ft.width+'px','left': (ft.left_pos)+'px','position':'absolute','color':ft.color,'font-family':ft.family,'font-weight':ft.weight,'font-size':ft.size+'px','letter-spacing':ft.Spacing}">
+      {{ft.text}}
+    </label>
+  </div>-->
+                          </div>
+                        </div>
+                      </div>
+
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer pdf-print-none" style="justify-content: center;">
+                  <button class="btn btn-outline-dark" (click)="printPreview()"><i class="fa fa-print"></i> Print </button>
+                </div>
+              </ng-template>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>

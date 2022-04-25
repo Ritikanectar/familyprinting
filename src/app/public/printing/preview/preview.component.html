@@ -1,0 +1,177 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+<style>
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+    .modal-content, .modal-body{
+        height: 520px !important;
+    }
+    .ng-resizable{position: absolute;z-index: 2;}
+    .ng-resizable img, #text1Label span, #text2Label span, 
+    #text1LabelBack span, #text2LabelBack span{border: dashed 2px grey;cursor: -webkit-grabbing; cursor: grabbing;}
+    .ng-resizable-handle{position: fixed!important;right: -15px!important; bottom: -15px!important;z-index: 10; width: 25px; height: 25px;}
+    
+    .ng-resizable-diagonal{border-color:transparent;}
+    .ng-resizable-handle.ng-resizable-e, .ng-resizable-handle.ng-resizable-n,
+    .ng-resizable-handle.ng-resizable-s, .ng-resizable-handle.ng-resizable-w,
+    .ng-resizable-handle.ng-resizable-ne, .ng-resizable-handle.ng-resizable-nw,
+    .ng-resizable-handle.ng-resizable-sw{visibility: hidden;}
+
+    #text1Label .ng-resizable-handle{right: -10px!important; bottom: -10px!important;}
+
+    .ng-dragging img{border:none; 
+      -webkit-box-shadow: 0px 0px 5px 3px rgba(0,0,0,0.25);
+     -moz-box-shadow: 0px 0px 5px 3px rgba(0,0,0,0.25);
+      box-shadow: 0px 0px 5px 3px rgba(0,0,0,0.25);
+    }
+
+    .rotate-slider .mat-slider .mat-slider-wrapper{background-color: grey;}
+    .rotate-slider .mat-accent .mat-slider-track-fill, 
+    .rotate-slider .mat-accent .mat-slider-thumb, 
+    .rotate-slider .mat-accent .mat-slider-thumb-label{background-color: #00b3e5!important;}
+    .product-art-tile .art-tile-single{border: solid 1px #fff;}
+    .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb, .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb-label,
+    .mat-warn .mat-slider-track-fill, .mat-warn .mat-slider-thumb, .mat-warn .mat-slider-thumb-label{background-color:#00b3e5;}
+    .mat-slider-vertical .mat-slider-wrapper{top: 0!important; background:#ccc;}
+    .btn-ovarlay{position: relative;}
+    .btn-ovarlay .button{ position: absolute;
+  width: auto;
+  left:0;
+  right: 0;
+  margin: 0 auto;
+  top: 40%;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .35s ease;}
+  .btn-ovarlay .button a {
+    padding: 4px 10px;
+    text-align: center;
+    color: #fff;
+    background-color:#00b3e5;
+    border: solid 1px #00b3e5;
+    z-index: 1;
+  }
+  .btn-ovarlay:hover .button {
+    opacity: 1;
+  }
+/* Fabric canvas new css */
+.right-gallery-section{height: 81vh;}
+.right-gallery-section .prodIMG{position:absolute; top:0; left: 0; right: 0; margin: 0 auto;width: 50%; /*width: 60%!important;*/}
+.canvas-container{ top:0px;  margin: 0;}
+.fabric-delete{position: absolute; right:0; top:100px; left:280px; right:0; width:max-content; color:#000; margin: 0 auto; background:#fcfcfc;border:solid 1px #dcdcdc;}
+.fabric-delete:hover{background-color: red;}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.pz-zoom-button{
+display: none;
+}
+.img-box {
+  width: 700px;
+    margin: 0 auto;
+    height: 84.5vh;
+    /* border: #000 solid 1px; */
+    top:23px;
+}
+.pinch-zoom-content {
+    justify-content: flex-start !important;
+}
+
+</style>
+<!-- Begin page content -->
+
+<main role="main" class="cust-main bg-cust-light">
+    <div class="container-fluid">
+      <div class="row ">
+        
+            <div class="modal-header"
+            [style]="{'background-color':uiElement && uiElement.popup_box_color && uiElement.popup_box_color!=''? uiElement.popup_box_color:'#00b3e5',
+            'color':uiElement && uiElement.body_text_color && uiElement.body_text_color!=''? uiElement.body_text_color:'#ffffff'}">
+              <h4 class="modal-title" id="modal-basic-title">{{preview.preview}}</h4>
+
+              <div>
+                <button type="button" class="btn btn-outline-dark productlargebtn mr-2" (click)="modal.close('Save click')"><i class="fa fa-pencil"></i> Edit</button>
+                <button class="btn btn-primary productlargebtn mr-2" id="btn-Preview-Image" (click)="saveProduct()"
+                [style]="{'background-color':uiElement && uiElement.btn_bg_color && uiElement.btn_bg_color!=''? uiElement.btn_bg_color:'#00b3e5',
+                'color':uiElement && uiElement.tile_color && uiElement.tile_color!=''? uiElement.btn_text_color:'#ffffff'}"><i class="fa fa-cart-plus"></i> Confirm</button>
+              </div>
+            </div>
+         
+              <div class="modal-body  d-flex justify-content-center" style="width: 100%;height: auto;background-size: cover;">
+                <div class="dynaImgF" style="float: left;position: relative;" [hidden]="frontProduct==''">
+                  <img [src]="prodClr.frontview" height='' width='' class="pop-pr-product">
+                  <div id="dynaImgFC" class="dynaImgFC" [ngStyle]="{'width':fCanvasWidth,'height':fCanvasHeight}">
+                  </div>
+                </div>
+                <div class="dynaImgB" style="float: right; position: relative;" [hidden]="backProduct==''">
+                  <img [src]="prodClr.backview" height='' width='' class="pop-pr-product">
+                  <div  id="dynaImgBC" class="dynaImgBC" [ngStyle]="{'width':bCanvasWidth,'height':bCanvasHeight}"></div>
+                </div>
+            </div>
+          
+      </div>
+    </div>
+    
+  </main>
+
+  
+

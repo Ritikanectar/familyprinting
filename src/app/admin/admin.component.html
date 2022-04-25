@@ -1,0 +1,132 @@
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  
+    <title>Family Industries</title>
+    <meta content="" name="descriptison">
+    <meta content="" name="keywords">
+  
+    <!-- Favicons -->
+    <link href="/assets/img/favicon.png" rel="icon">
+    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Krub:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  
+    <!-- Vendor CSS Files -->
+    <link href="/assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+    <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="/assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assets/vendor/venobox/venobox.css" rel="stylesheet">
+    <link href="/assets/vendor/aos/aos.css" rel="stylesheet">
+  
+    <!-- Font Files -->
+    <link href="/assets/fonts/Garage Gothic/GarageGothic-Regular.otf" rel="stylesheet">
+    <link href="/assets/fonts/Garage Gothic/GarageGothic-black.ttf" rel="stylesheet">
+    <link href="/assets/fonts/SFPro/SFProDisplay-Thin.ttf" rel="stylesheet">
+    <link href="/assets/fonts/SFPro/SFProDisplay-Semibold.ttf" rel="stylesheet">
+
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  </head>
+
+<body class="d-flex flex-column h-100 bg-white ">
+    <header class="fixed-top">
+    <!-- Fixed navbar -->
+      <nav class="navbar navbar-expand-md navbar-dark fixed bg-dark">
+        <div class="text-left col-lg-3 col-md-4 col-sm-4 col-4"><a routerLink="/admin/dashboard" class="logo ">
+          <img src="assets/img/FI-Logo-Color-White.png" alt="logo" class=" logo img-fluid"> 
+          </a>
+          <span class="text-white menu-icon" (click)="openNav()">&#9776;</span>
+        </div>
+        <div class="text-center col-lg-6 col-md-5 col-sm-4 col-4"><h2 class="headerName"></h2></div>
+  
+        <div class="col-lg-3 col-md-3  col-sm-4 col-4">
+          <div class="ml-auto ml-md-0 text-right">
+            <!-- <span class="mt-3">Hello Admin</span> -->
+            <!-- <li class="nav-item dropdown" style="list-style-type: none;">
+                <a class="nav-link dropdown-toggle text-white" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-bell-o"></i> Hello Admin
+                    <img src="assets/img/icons/profile.png" class="user-circle ml-2" width="35px" height="35px " alt=""></a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item small" href="#">Inbox</a>
+                    <a class="dropdown-item small" href="#">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item small" href="javascript:void(0)" (click)="logout()">Logout</a>
+                </div>
+            </li> -->
+            <div ngbDropdown class="d-inline-block">
+              <button class="btn text-white" id="dropdownBasic1" ngbDropdownToggle style="background: transparent;">
+                Hello {{roleName}} <img src="assets/img/icons/profile.png" class="user-circle ml-2" width="35px" height="35px " alt="">
+              </button>
+              <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                <!-- <a class="dropdown-item " href="#"><i class="fa fa-inbox mr-2"></i> Inbox</a>
+                <a class="dropdown-item" href="#"><i class="fa fa-cogs mr-2" ></i> Settings</a> -->
+                <a class="dropdown-item" href="javascript:void(0)" (click)="logout()"><i class="fa fa-power-off  mr-2"></i> Logout</a>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+          <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button> -->
+            <!-- <div class="collapse navbar-collapse" id="navbarCollapse">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                  CHOOSE PRODUCT
+                </li>
+              </ul>
+            </div> -->
+      </nav>
+      <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn border-0" (click)="closeNav()">&times;</a>
+        <a href="javascript:void(0)" routerLink="/admin/dashboard">Dashboard</a>
+        <a href="javascript:void(0)" routerLink="/admin/event">Event Management</a>
+        <a href="javascript:void(0)" routerLink="/admin/print-moderation">Print Moderation</a>
+        <a href="javascript:void(0)" routerLink="/admin/product">Product Managment</a>
+        <a href="javascript:void(0)" routerLink="/admin/app-list">App Management</a>
+        <a href="javascript:void(0)" routerLink="/admin/gallery">Artwork Management</a>
+        <a href="javascript:void(0)" routerLink="/admin/user">User Management</a>
+        <a href="javascript:void(0)" (click)="logout()">Logout</a>
+      </div>
+      
+
+  </header>
+<router-outlet></router-outlet>
+
+<!-- footer -->
+<footer class="footer mt-auto py-3 bg-dark fixed-bottom">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 text-md-left"> 
+          <p class="">&copy; Copyright @ Family Industries </p> 
+        </div>
+        <div class="col-lg-4  col-md-4 text-md-center">
+        <!-- <p class=""> Customer Care - XXXXXXXXX</p> -->
+      </div>
+        <div class="col-lg-4  col-md-4 text-md-right">
+         <p class=""><a href="javascript:void(0)">Terms of Use &nbsp;</a>|<a href="javascript:void(0)">&nbsp; Privacy Policy </a></p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/vendor/jquery.easing/jquery.easing.min.js"></script>
+  <script src="/assets/vendor/php-email-form/validate.js"></script>
+  <script src="/assets/vendor/owl.carousel/owl.carousel.min.js"></script>
+  <script src="/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="/assets/vendor/venobox/venobox.min.js"></script>
+  <script src="/assets/vendor/aos/aos.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+ 
+
+  <!-- Template Main JS File -->
+  <script src="/assets/js/main.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script>
+  window.jQuery || document.write('<script src="/assets/js/vendor/jquery.slim.min.js"><\/script>')
+  </script>
+  <script src="/assets/dist/js/bootstrap.bundle.min.js"></script>
+</body>

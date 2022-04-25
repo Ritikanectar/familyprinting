@@ -1,0 +1,46 @@
+<main role="main" id="main" class="main-wrapper">
+    <div class="container-fluid">
+        <div class="col-lg-4 p-4 offset-md-4 card rounded">
+            <form class="w-100" enctype="multipart/form-data" [formGroup]="galleryForm" (ngSubmit)="create_gallery()">
+
+                <div class="row">
+                    <div class="col-12">
+                        <h4 class="text-center"><strong>Add Gallery</strong></h4>
+                    </div>
+
+                    <div class="col-12 form-group">
+                        <label>Collection Name</label>
+                        <input type="text" class="form-control" name="title" placeholder="Select Collection Name" formControlName="title" [ngClass]="{ 'is-invalid': submitted && f.title.errors }">
+                        <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+                            <div *ngIf="f.title.errors.required">Collection name is required</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">	
+                    <div class="col-12">
+                        <div class="form-group inputDnD" style="height: 100px;">
+                            <label>Upload Image</label>
+                            <input type="file" class="form-control-file" id="inputFile" name="bgimage" formControlName="bgimage" [ngClass]="{ 'is-invalid': submitted && f.bgimage.errors }" accept="image/*" (change)="onFileSelect($event)" data-title="Drag your image here eg. PNG, JPG, SVG, EPS">
+                            <div *ngIf="submitted && f.bgimage.errors" class="invalid-feedback">
+                                <div *ngIf="f.bgimage.errors.required">Gallery Image is required</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>		
+
+                <div *ngIf="loader">
+                    <h4 style="text-align: center;padding: 50px;" class="noData">
+                        <img src="/assets/img/loading.gif" height="80" width="80">
+                        Creating Gallery...
+                    </h4>
+                </div>
+                <br/><br/>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-primary ">Create Gallery</button>
+                    </div>	
+                </div>		
+            </form>
+        </div>      
+    </div>
+</main>

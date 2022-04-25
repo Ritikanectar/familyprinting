@@ -1,0 +1,32 @@
+<main role="main" class="main-wrapper">
+    <div class="container-fluid">
+      <div class="col-lg-4 p-4 offset-md-4 my-5 pt-5 h-100">
+      <form class="login-form mt-auto" [formGroup]='authForm' (ngSubmit)='callApi()'>
+        <h2 class="mb-4 heading">Login to Family Industries</h2>
+        <div class="login-wrap">
+          <div class="input-group mb-3">
+            <span class="input-group-addon"><i class="icon_profile"></i></span>
+            <input type="text" class="form-control" placeholder="Enter username" formControlName='username' [ngClass]="{ 'is-invalid': submitted && f.username.errors }" autofocus>
+            <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                <div *ngIf="f.username.errors.required">Username is required</div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-addon"><i class="icon_key_alt"></i></span>
+            <input type="password" class="form-control" placeholder="Enter password" formControlName='password' [ngClass]="{ 'is-invalid': submitted && f.password.errors }" value="">
+            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+              <div *ngIf="f.password.errors.required">Password is required</div>
+            </div>
+          </div>
+          <!-- <label class="checkbox">
+              <input type="checkbox" value="remember-me"> Remember me
+          </label> -->
+          <div [ngStyle]="{'color': msgColor? msgColor : '#000', 'text-align' : 'center', 'padding-bottom': '10px'}">{{message}}</div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block">LOGIN</button>
+        </div>
+      </form>
+      </div>
+      
+    </div>
+  </main>

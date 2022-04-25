@@ -1,0 +1,473 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+<style>
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+    .modal-content, .modal-body{
+        height: 520px !important;
+    }
+    .ng-resizable{position: absolute;z-index: 2;}
+    .ng-resizable img, #text1Label span, #text2Label span, 
+    #text1LabelBack span, #text2LabelBack span{border: dashed 2px grey;cursor: -webkit-grabbing; cursor: grabbing;}
+    .ng-resizable-handle{position: fixed!important;right: -15px!important; bottom: -15px!important;z-index: 10; width: 25px; height: 25px;}
+    
+    .ng-resizable-diagonal{border-color:transparent;}
+    .ng-resizable-handle.ng-resizable-e, .ng-resizable-handle.ng-resizable-n,
+    .ng-resizable-handle.ng-resizable-s, .ng-resizable-handle.ng-resizable-w,
+    .ng-resizable-handle.ng-resizable-ne, .ng-resizable-handle.ng-resizable-nw,
+    .ng-resizable-handle.ng-resizable-sw{visibility: hidden;}
+
+    #text1Label .ng-resizable-handle{right: -10px!important; bottom: -10px!important;}
+
+    .ng-dragging img{border:none; 
+      -webkit-box-shadow: 0px 0px 5px 3px rgba(0,0,0,0.25);
+     -moz-box-shadow: 0px 0px 5px 3px rgba(0,0,0,0.25);
+      box-shadow: 0px 0px 5px 3px rgba(0,0,0,0.25);
+    }
+
+    .rotate-slider .mat-slider .mat-slider-wrapper{background-color: grey;}
+    .rotate-slider .mat-accent .mat-slider-track-fill, 
+    .rotate-slider .mat-accent .mat-slider-thumb, 
+    .rotate-slider .mat-accent .mat-slider-thumb-label{background-color: #00b3e5!important;}
+    .product-art-tile .art-tile-single{border: solid 1px #fff;}
+    .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb, .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb-label,
+    .mat-warn .mat-slider-track-fill, .mat-warn .mat-slider-thumb, .mat-warn .mat-slider-thumb-label{background-color:#00b3e5;}
+    .mat-slider-vertical .mat-slider-wrapper{top: 0!important; background:#ccc;}
+    .btn-ovarlay{position: relative;}
+    .btn-ovarlay .button{ position: absolute;
+  width: auto;
+  left:0;
+  right: 0;
+  margin: 0 auto;
+  top: 40%;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .35s ease;}
+  .btn-ovarlay .button a {
+    padding: 4px 10px;
+    text-align: center;
+    color: #fff;
+    background-color:#00b3e5;
+    border: solid 1px #00b3e5;
+    z-index: 1;
+  }
+  .btn-ovarlay:hover .button {
+    opacity: 1;
+  }
+/* Fabric canvas new css */
+.right-gallery-section{height: 81vh;}
+.right-gallery-section .prodIMG{position:absolute; top:0; left: 0; right: 0; margin: 0 auto;width: 50%; /*width: 60%!important;*/}
+.canvas-container{ top:0px;  margin: 0;}
+.fabric-delete{position: absolute; right:0; top:100px; left:280px; right:0; width:max-content; color:#000; margin: 0 auto; background:#fcfcfc;border:solid 1px #dcdcdc;}
+.fabric-delete:hover{background-color: red;}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.pz-zoom-button{
+display: none;
+}
+.img-box {
+  width: 700px;
+    margin: 0 auto;
+    height: 84.5vh;
+    /* border: #000 solid 1px; */
+    top:23px;
+}
+.pinch-zoom-content {
+    justify-content: flex-start !important;
+}
+
+</style>
+<!-- Begin page content -->
+<nav class="navbar navbar-expand-md navbar-dark bg-mid-gry product-navbar"  [style.background-color]="uiElement && uiElement.tile_color && uiElement.tile_color!='' ? uiElement.tile_color : null">
+    <div class="col-lg-10 text-center" *ngIf="uiElement && uiElement.tile_color && uiElement.tile_color!='';else dynaHeader">
+      <h2 class="font-weight-bold" [style]="{'font-family':uiElement.header_typeface}">Customize your product</h2>
+    </div>
+    <ng-template #dynaHeader>
+      <div class="col-lg-10 col-md-10 text-center">
+        <h2 class="font-weight-bold" style="color: #222;">Customize your product</h2>
+      </div>
+    </ng-template>
+    
+    <div class="col-lg-2 col-md-2 text-right">
+        <a href="javascript:void(0)" class="mr-auto" (click)="open(mymodal)" id="preview-btn">
+            <button class="btn btn-primary btn-lg btn-block productlargebtn" 
+            [style]="{'background-color':uiElement && uiElement.btn_bg_color && uiElement.btn_bg_color!=''? uiElement.btn_bg_color:'#00b3e5',
+            'color':uiElement && uiElement.tile_color && uiElement.tile_color!=''? uiElement.btn_text_color:'#ffffff'}">
+            <i class="icofont-check"></i> Preview</button>
+        </a>
+    </div>
+    <input type="hidden" name="fcanvastop" id="fcanvastop" [value]="" >
+    <input type="hidden" name="fcanvasleft" id="fcanvasleft" [value]="" >
+    <input type="hidden" name="bcanvastop" id="bcanvastop" [value]="" >
+    <input type="hidden" name="bcanvasleft" id="bcanvasleft" [value]="" >
+    <input type="hidden" name="fcanvaswidth" id="fcanvaswidth" [value]="" >
+    <input type="hidden" name="fcanvasheight" id="fcanvasheight" [value]="" >
+    <input type="hidden" name="bcanvaswidth" id="bcanvaswidth" [value]="" >
+    <input type="hidden" name="bcanvasheight" id="bcanvasheight" [value]="" >
+  </nav>
+
+<main role="main" class="cust-main bg-cust-light">
+    <div class="container-fluid">
+      <div class="row ">
+        <div *ngIf="activeMenu=='clipart'" class="left-gallery-section  left-wrapper scrollover scrollbar-light-blue thin">
+            <h5 class="heading text-dark my-3"><strong>{{galleryTitle}}</strong></h5>
+            <div class="product-art-tile">
+                <div id="list-two" class="col-12" style="height:83vh;">
+                    <div class="row" style="display: flex; flex-wrap: nowrap; overflow-x: scroll;"> <!--  *ngIf="switchGal" -->
+                      <div class="col-6 mb-2 px-2" *ngFor="let x of gallery;let i = index;">
+                          <a class="btn art-tile-single" [ngStyle]="{'border': hovered === i && uiElement && uiElement.sel_highlight && uiElement.sel_highlight!=''? '2px solid '+uiElement.sel_highlight:''}"
+                              (mouseover)="hovered = i" (mouseout)="hovered = -1" (click)="getCliparts(x.gallery_id,x.title)" >
+                              <img src="{{'/src/assets/uploads/'+x.gallery_image}}" alt="" class="img-fluid">
+                              <p class="text-center mb-0"><small>{{x.title}}</small></p>
+                          </a>
+                      </div>
+                    </div>
+                    
+                    <h4 class="mt-3">Artwork</h4>
+                    <div class="row scrollbar-light-blue artworkscrollbar">
+                      <div class="col-6 px-2 mb-2 clpart{{i}}" *ngFor="let x of cliparts;index as i">
+                        <a style="position: relative;z-index: 5;" class="btn art-tile-single btn-ovarlay resizable clpartImg{{i}}"
+                        [ngStyle]="{'border': hoveredArtwork === i && uiElement && uiElement.sel_highlight && uiElement.sel_highlight!=''? '2px solid '+uiElement.sel_highlight:''}"
+                        (mouseover)="hoveredArtwork = i" (mouseout)="hoveredArtwork = -1"
+                         (click)="addImageCanvas(x,i)" style="overflow: hidden; position: relative;z-index: 5;">
+                          <img src="{{'/src/assets/uploads/'+x.artwork_image}}" alt="" class="img-fluid" id="clipArtIMG{{i}}">
+                          <div class="button"><a href="javascript:void(0)" 
+                            [ngStyle]="{'border': hoveredArtwork === i && uiElement && uiElement.sel_highlight && uiElement.sel_highlight!=''? '2px solid '+uiElement.sel_highlight:'',
+                          'background-color':hoveredArtwork === i && uiElement && uiElement.sel_highlight && uiElement.sel_highlight!=''? uiElement.sel_highlight:''}"><i class="fa fa-plus"></i> </a></div>
+                        </a>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+        
+        <div *ngIf="activeMenu=='text'" class="left-gallery-section  left-wrapper scrollover scrollbar-light-blue thin ">
+          <div class="card-box"><h4 class="heading">ADD TEXT</h4> </div>         
+          <div class="card-box text-options">
+            <h6 class="font-weight-bold mb-3">Color Options</h6>
+            <div class="btn-group btn-group-toggle btn-color-group d-block mt-n2 ml-n2" data-toggle="buttons">
+              <label class="btn rounded-circle white border-inset-grey p-3 m-1 waves-effect waves-light" (click)="addColorText('#ebebeb')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle grey p-3 m-1 waves-effect waves-light" (click)="addColorText('#888888')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle black p-3 m-1 waves-effect waves-light" (click)="addColorText('#000000')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle green p-3 m-1 waves-effect waves-light" (click)="addColorText('#018629')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle blue p-3 m-1 waves-effect waves-light" (click)="addColorText('#071bd1')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle purple p-3 m-1 waves-effect waves-light" (click)="addColorText('#8306bd')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle yellow p-3 m-1 waves-effect waves-light" (click)="addColorText('#f5e502')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle indigo p-3 m-1 waves-effect waves-light active" (click)="addColorText('#1d016d')">
+                <input type="checkbox" checked="" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle red p-3 m-1 waves-effect waves-light" (click)="addColorText('#ee0000')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle orange p-3 m-1 waves-effect waves-light" (click)="addColorText('#ff8b06')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle pink p-3 m-1 waves-effect waves-light" (click)="addColorText('#e91e73')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+              <label class="btn rounded-circle safron p-3 m-1 waves-effect waves-light" (click)="addColorText('#fc1d00')">
+                <input type="checkbox" autocomplete="off">
+              </label>
+            </div>
+          </div>
+          
+          <div class="card-box pb-0 border-0">
+            <h6 class="font-weight-bold mb-3">Text Options</h6>
+            <div class="text-options form-group ">
+              <div class="row">
+              <label class="col-sm-5">Font</label>
+              <span class="col-sm-7">
+                <select class="form-control" name="typeface" (change)="addFontFamily($event)">
+                  <option value="0">Select typeface</option>
+                  <option style="font-family: BebasNeue-Regular;font-size: 15px;">BebasNeue-Regular</option>
+                  <option style="font-family: Bouquet-Typeface;font-size: 15px;">Bouquet-Typeface</option>
+                  <option style="font-family: MarinaioSerif-Black;font-size: 15px;">MarinaioSerif-Black</option>
+                  <option style="font-family: Mutiara_Display;font-size: 15px;">Mutiara_Display</option>
+                  <option style="font-family: Arial;font-size: 15px;">Arial</option>
+                  <option style="font-family: Times New Roman;font-size: 15px;">Times New Roman</option>
+                  <option style="font-family: Brush Script MT;font-size: 15px;">Brush Script MT</option>
+                  <option style="font-family: Comic Sans MS;font-size: 15px;">Comic Sans MS</option>
+                  <option style="font-family: Trebuchet MS;font-size: 15px;">Trebuchet MS</option>
+                  <option style="font-family: Verdana;font-size: 15px;">Verdana</option>
+                  <option style="font-family: Old English Text MT;font-size: 15px;">Old English Text MT</option>
+                  <option style="font-family: Copperplate;font-size: 15px;">Copperplate</option>
+                  <option style="font-family: Didot;font-size: 15px;">Didot</option>
+                  <option style="font-family: Perpetua;font-size: 15px;">Perpetua</option>
+                  <option style="font-family: Garamond;font-size: 15px;">Garamond</option>
+                  <option style="font-family: Optima;font-size: 15px;">Optima</option>
+                  <option style="font-family: Papyrus;font-size: 15px;">Papyrus</option>
+              </select>
+              </span>
+            </div>
+            </div>
+            <div class="form-group text-options ">
+              <div class="row">
+              <label class="col-sm-7">Style</label>
+              <span class="col-sm-5">
+                 <!-- <i class="icofont-simple-right icon-control"></i> -->
+                 <select class="form-control" name="weight" (change)="addFontStyle($event)">
+                    <option value="normal">Normal</option>
+                    <option value="bold">Bold</option>
+                 </select>
+                </span>
+              </div>  
+            </div>
+            <div class="text-options form-group mb-0">
+              <div class="row">
+              <label class="col-sm-7">Letter Spacing</label>
+              <span class="col-sm-5">
+                <input type="number" class="form-control" (keyup)="addFontSpace($event)">
+              </span>
+            </div>
+            </div>
+          </div>
+          <div class="card-box border-0">
+            <div class="text-option border-0">
+              <h6 class="font-weight-bold mb-3">Text</h6>
+              <span class="text-left-head d-flex">
+                <input type="text" class="form-control" [(ngModel)]="textString"/>
+                <button class="btn btn-primary" (click)="addText()">Add</button>
+              </span>
+            </div>
+          </div>
+
+          <!--<div class="card-box border-none" *ngIf="switchText=='Back'">
+            <div class="text-options">
+              <h6 class="font-weight-bold mb-3">Names & Numbers</h6>
+              <span class="text-left-head"><input type="text" class="form-control" name="title1Back" id="title1Back" (keyup)="addText1($event,'text1')"></span>
+              <span class="mr-2 float-right"><i class="icofont-simple-right icon-control"></i></span>
+            </div>
+            <div class="text-options">
+              <span class="text-left-head"><input type="text" class="form-control" name="title2Back" id="title2Back" (keyup)="addText2($event,'text2')"></span>
+              <span class="mr-2 float-right"> <i class="icofont-simple-right icon-control"></i></span>
+            </div>
+          </div>-->
+        </div>
+
+
+
+        <ng-template #mymodal let-modal style="max-width: 1000px;">
+            <div class="modal-header"
+            [style]="{'background-color':uiElement && uiElement.popup_box_color && uiElement.popup_box_color!=''? uiElement.popup_box_color:'#00b3e5',
+            'color':uiElement && uiElement.body_text_color && uiElement.body_text_color!=''? uiElement.body_text_color:'#ffffff'}">
+              <h4 class="modal-title" id="modal-basic-title">{{preview.preview}}</h4>
+              <a src="http://localhost:4200/#/previewfront/eyJpdiI6InlvcDRDNHUxcXEzN0hQT0hkaHpCL0E9PSIsInZhbHVlIjoiUDhjT25ucDliK0h4MDJpbG9nbWVQQT09IiwibWFjIjoiNzNiNzBmMzZjYzA5OGE0NmEyMmNkMjNkMDY5Y2VlNTRiZDRlOGUwZjc5OTI1N2VjMDdiMjNjMmI5ODFiN2NhNiIsInRhZyI6IiJ9/eyJpdiI6IkFSQXlTNjhlamNUQ1hNNHhyUW9uVkE9PSIsInZhbHVlIjoiN1QvU3VWRUlmQlZiNm05eEU1NndqUT09IiwibWFjIjoiZDAyY2MzM2FjYWZlOTdjY2UyNGQwYjFkYTEwMTdkMmIxMzk1ZGM3ODM3OTAxNmYyZjM4NTk1MjBiNjY2OGY0ZiIsInRhZyI6IiJ9/54__M__%23ebdbdb/46">{{preview.preview}}</a>
+
+              <div>
+                <button type="button" class="btn btn-outline-dark productlargebtn mr-2" (click)="modal.close('Save click')"><i class="fa fa-pencil"></i> Edit</button>
+                <button class="btn btn-primary productlargebtn mr-2" id="btn-Preview-Image" (click)="saveProduct()"
+                [style]="{'background-color':uiElement && uiElement.btn_bg_color && uiElement.btn_bg_color!=''? uiElement.btn_bg_color:'#00b3e5',
+                'color':uiElement && uiElement.tile_color && uiElement.tile_color!=''? uiElement.btn_text_color:'#ffffff'}"><i class="fa fa-cart-plus"></i> Confirm</button>
+                
+                <!-- <button type="button" class="btn btn-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                  <span aria-hidden="true">Close</span>
+                </button> -->
+              </div>
+
+              
+            </div>
+            <!-- <div class="modal-body  d-flex justify-content-center" style="background-image: url('{{appurl+preview.preview_file}}');background-repeat: no-repeat;width: 100%;height: auto;background-size: cover;"> -->
+              <div class="modal-body  d-flex justify-content-center" style="width: 100%;height: auto;background-size: cover;">
+                <div class="dynaImgF" style="float: left;position: relative;" [hidden]="frontProduct==''">
+                  <img [src]="prodClr.frontview" height='' width='' class="pop-pr-product">
+                  <div id="dynaImgFC" class="dynaImgFC" [ngStyle]="{'width':fCanvasWidth,'height':fCanvasHeight}">
+                  </div>
+                </div>
+                <div class="dynaImgB" style="float: right; position: relative;" [hidden]="backProduct==''">
+                  <img [src]="prodClr.backview" height='' width='' class="pop-pr-product">
+                  <div  id="dynaImgBC" class="dynaImgBC" [ngStyle]="{'width':bCanvasWidth,'height':bCanvasHeight}"></div>
+                </div>
+            </div>
+            <!-- <div class="modal-footer" style="justify-content: center;">
+              <button type="button" class="btn btn-outline-dark productlargebtn  mr-4" (click)="modal.close('Save click')"><i class="fa fa-pencil"></i> Edit</button>
+              <button class="btn btn-primary productlargebtn" id="btn-Preview-Image" (click)="saveProduct()"><i class="fa fa-cart-plus"></i> Confirm & Place Order</button>
+              
+            </div> -->
+          </ng-template>
+<!--
+        <mat-slider *ngIf="scale=='scalable'" horizontal thumbLabel
+                    [displayWith]="formatLabel"
+                    color="warn" style="z-index: 222;position:absolute;bottom: 50px; right:25px; "
+                    min="1" max="10" step="1" value="1" (input)="reswitchClipart($event)">
+
+        </mat-slider>-->
+       
+        <div class="right-gallery-section bg-light-gry h-100 text-md-center svgContv" style="top:56px; bottom: 54px;z-index: 1;" (click)="plotImage($event)">
+
+            <div [hidden]="switchText=='Back'" class="bg-cust-light" style="position: relative; width:100%; height:90vh;" >
+              <div class="img-box">
+                <img src="{{prodClr.frontview}}" alt="" class="img-fluid prodIMG" id="frontimg">
+                <!-- <pinch-zoom  [disablePan]="true" style="background-color:transparent;" id="frontCan" > -->
+                  <div style="background-color:transparent;position: relative;display: none;" id="frontCan">
+                    <canvas  style="position: absolute;top: 133px;width: 100px;margin:0 auto;border: 2px dashed grey;background-color: transparent;" id="canvas" draggable="true"></canvas>
+                  </div>
+                <!-- </pinch-zoom> -->
+                <!--<a href="javascript:void(0)" class="btn btn-secondary fabric-delete" (click)="removeObjCanvas()">
+                  <i class="fas fa-times"></i>
+                </a>-->
+              </div>
+            </div>
+          
+
+            <div [hidden]="switchText=='Front'" class="bg-cust-light" style="position: relative; width:100%; height:90vh;">
+              <div class="img-box">
+                <img src="{{prodClr.backview}}" alt="" class="img-fluid prodIMG" id="backimg">
+                <!-- <pinch-zoom [auto-zoom-out]="true" [disablePan]="true" style="background-color:transparent;" id="backCan"> -->
+                  <div style="background-color:transparent;position: relative;" id="backCan">
+                  <canvas  style="position: absolute;top: 133px;width: 100px;margin:0 auto;border: 2px dashed grey;background-color: transparent;" id="canvasBack"></canvas>
+                  </div>
+                <!-- </pinch-zoom> -->
+              <!--<a href="javascript:void(0)" class="btn btn-secondary fabric-delete" (click)="removeObjCanvas()">
+                <i class="fas fa-times"></i>
+              </a>-->
+              </div>
+            </div>
+
+          <!-- <pinch-zoom [auto-zoom-out]="true" [disablePan]="true">
+            <div [hidden]="switchText=='Front'" class="bg-cust-light" style="position: relative; width: 100%; height: 90vh;">
+              <img src="{{prodClr.backview}}" alt="" class="img-fluid prodIMG">
+              <canvas style="
+                position: absolute;
+                top: 133px;
+                width: 100px;
+                margin:0 auto;
+                border: 2px dashed grey;
+                background-color: transparent;" id="canvasBack">
+              </canvas>
+            </div>
+          </pinch-zoom> -->
+
+            <div *ngIf="isBoth==true" style="position:absolute;z-index: 10; bottom:25px; left:15px;">
+              <a href="javascript:void(0)" (click)="switchProductView(switchText)" class="">
+                <i [style]="{'background': uiElement && uiElement.front_back_toggle && uiElement.front_back_toggle!=''? uiElement.front_back_toggle:'',
+                  'color': 'white'}" class="fas fa-sync-alt prod-cust-icons"></i>
+                {{activeText}}
+              </a>
+            </div>
+
+            <!-- <mat-slider *ngIf="scale=='scalable'" vertical thumbLabel
+        [displayWith]="formatLabel"
+        color="warn" style="z-index: 222;position:absolute;bottom: 50px; right:25px; "
+        min="0" max="10" step="1" value="1" (input)="reswitchClipart($event)" >
+        layer
+    </mat-slider> -->
+            <div *ngIf="scale=='scalable'" (click)="addLayer()" style="position: absolute; cursor: pointer; right: 27px; bottom: 25px; z-index: 55;">
+              <i [style]="{'background': uiElement && uiElement.front_back_toggle && uiElement.front_back_toggle!=''? uiElement.front_back_toggle:'',
+              'color': 'white'}" class="fas fa-layer-group prod-cust-icons"></i>
+            </div>
+        </div>
+
+      </div>
+    </div>
+    
+  </main>
+
+  <footer class="footer footer-nav mt-auto pt-3 pb-1 bg-mid-gry fixed-bottom">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 footer-tab text-md-center">
+          <a href="javascript:void(0)" class="btn-footer btn-block" 
+          [ngStyle]="{'color': hoveredToggleProd === 1 && uiElement && uiElement.toggled_color && uiElement.toggled_color!=''? uiElement.toggled_color:(hoveredToggleProd === -1 && uiElement && uiElement.un_toggled_color && uiElement.un_toggled_color!=''? uiElement.un_toggled_color:''),
+          'border-bottom': hoveredToggleProd === 1 && uiElement && uiElement.toggled_color && uiElement.toggled_color!=''? '5px solid '+uiElement.toggled_color:(hoveredToggleProd === -1 && uiElement && uiElement.un_toggled_color && uiElement.un_toggled_color!=''? '5px solid '+uiElement.un_toggled_color:'')}"
+          (mouseover)="hoveredToggleProd = 1" (mouseout)="hoveredToggleProd = -1"
+          routerLink="/product/{{evID}}/{{userID}}/{{clientID}}">
+          <span class="mr-2">
+            <i class="fa fa-dice-d6"></i></span> 
+            Change Product
+          </a>
+        </div>
+        <div class="col-lg-4  col-md-4 footer-tab text-md-center">
+          <a href="javascript:void(0)" (click)="switchMenu('clipart')" 
+          [ngStyle]="{'color': activeMenu==='clipart' || (hoveredToggleArt === 1 && uiElement && uiElement.toggled_color && uiElement.toggled_color!='')? uiElement.toggled_color:(activeMenu !='clipart' && hoveredToggleArt === -1 && uiElement && uiElement.un_toggled_color && uiElement.un_toggled_color!=''? uiElement.un_toggled_color:''),
+          'border-bottom': activeMenu==='clipart' || (hoveredToggleArt === 1 && uiElement && uiElement.toggled_color && uiElement.toggled_color!='')? '5px solid '+uiElement.toggled_color:(activeMenu !='clipart' && hoveredToggleArt === -1 && uiElement && uiElement.un_toggled_color && uiElement.un_toggled_color!=''? '5px solid '+uiElement.un_toggled_color:'')}"
+          (mouseover)="hoveredToggleArt = 1" (mouseout)="hoveredToggleArt = -1"
+          class="btn-footer btn-block {{activeMenu=='clipart'? 'active':''}}">
+          <span class="mr-2"><i class="fa fa-plus-circle"></i></span> Add Artwork</a>
+      </div>
+        <div class="col-lg-4  col-md-4 footer-tab text-md-center">
+          <a href="javascript:void(0)" (click)="switchMenu('text')" 
+          [ngStyle]="{'color': activeMenu==='text' || (hoveredToggleTxt === 1 && uiElement && uiElement.toggled_color && uiElement.toggled_color!='')? uiElement.toggled_color:(activeMenu !='text' && hoveredToggleTxt === -1 && uiElement && uiElement.un_toggled_color && uiElement.un_toggled_color!=''? uiElement.un_toggled_color:''),
+          'border-bottom': activeMenu==='text' || (hoveredToggleTxt === 1 && uiElement && uiElement.toggled_color && uiElement.toggled_color!='')? '5px solid '+uiElement.toggled_color:(activeMenu !='text' && hoveredToggleTxt === -1 && uiElement && uiElement.un_toggled_color && uiElement.un_toggled_color!=''? '5px solid '+uiElement.un_toggled_color:'')}"
+          (mouseover)="hoveredToggleTxt = 1" (mouseout)="hoveredToggleTxt = -1"
+          class="btn-footer btn-block {{activeMenu=='text'? 'active':''}}">
+          <span class="mr-2"><i class="fa fa-plus-circle"></i></span> Add Text</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+

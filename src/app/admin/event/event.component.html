@@ -1,0 +1,282 @@
+<style>
+  .dataTables_empty {
+    display: none !important;
+  }
+  .modal-dialog .modal-content{
+    height: auto !important;
+  }
+  .input-container input {
+    border: none;
+    box-sizing: border-box;
+    outline: 0;
+    padding: .75rem;
+    position: relative;
+    width: 100%;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+}
+</style>
+<!-- Begin page content -->
+<main role="main" class="main-wrapper" id="main">
+    <div class="container-fluid table-page text-center">
+      <div class="row ">
+        <div class="col-lg-4  text-left">
+          <div class="form-row">
+            <!-- <div class="form-group col-md-6">
+              <input type="name" class="form-control" id="inputfirst" placeholder="Search by event">
+            </div> -->
+            <div class="form-group col-md-6">
+              <a class="btn btn-primary btn-event btn-lg " routerLink='/admin/create-event'>Create New Event</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+            &nbsp;
+        </div>
+        <div class="col-lg-2 text-right">
+          <div class="form-row">
+            <!-- <div class="form-group col-md-6">
+              <li class="nav-item dropdown" style="list-style-type: none;">
+                <a class="nav-link dropdown-toggle" id="filterDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/img/icons/filter.png" class="user-circle" width="20px" alt=""></a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filterDropdown">
+                    <a class="dropdown-item small" href="#"><span class="ml-2"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked></span> Client Name</a>
+                    <a class="dropdown-item small" href="#"><span class="ml-2"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked></span> Event Name</a>
+                    <a class="dropdown-item small" href="#"> <span class="ml-2"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked></span>Event Type</a>
+                    <a class="dropdown-item small" href="#"> <span class="ml-2"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked></span>Builder</a>
+                    <a class="dropdown-item small" href="#"> <span class="ml-2"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked></span>Location</a>
+                </div>
+            </li>
+            </div> -->
+            <div class="form-group col-lg-12">
+              <!-- <select id="inputState" class="form-control">
+                <option selected="">Export as PDF</option>
+                <option>Export as Excel</option>
+              </select> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="bg-white p-4 rounded text-left box-shadow-md table-responsive">
+
+            <button class="btn btn-primary" (click)="printPage()">print</button>
+            <a href="{{url+'export-event'}}" class="btn btn-primary" style="margin-left: 15px;">Excel</a>
+            <br/><br/>
+
+            <table id="tablePreview" datatable [dtOptions]="dtOptions"  class="table small table-hover row-border hover">
+              <!--Table head    [dtOptions]="dtOptions" -->
+                <thead>
+                  <tr>
+                    <th>Event Name</th>
+                    <th>Client Name</th>
+                    <th>Event type</th>
+                    <th>Builder</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Location</th>
+                    <th>Options</th>
+                  </tr>
+                </thead>
+                <!--Table head-->
+                
+                <tbody *ngIf="events?.length">
+                 <tr *ngFor="let event of events; let i=index; let last = last">
+                    <td>{{event.app_name? event.app_name:''}}</td>
+                    <td>{{event.client}}</td>
+                    <td>{{event.event_type}}</td>
+                    <td>{{event.name}}</td>
+                    <td>{{event.start_datetime}}</td>
+                    <td>{{event.end_datetime}}</td>
+                    <td>{{event.event_place}}</td>
+                   <td class="">
+                      <span class="">
+                        <a href="javascript:void(0)" class="btn btn-primary btn-sm m-1" (click)="open(mymodal,event.event_id)">
+                          <!-- <img src="assets/img/icons/eye-outline.png" alt=""> -->
+                          <i class="fa fa-eye"></i>
+                        </a>
+                      </span>
+                      <span class="" *ngIf="checkAuth()!=''">
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm m-1" (click)="deleteEvent(event.event_id)">
+                          <!-- <img src="assets/img/icons/delet.png" alt=""> -->
+                          <i class="fa fa-trash text-white"></i>
+                        </a>
+                      </span>   
+                    </td>
+                
+                  </tr>
+                  
+                  <tr *ngIf="events?.length == 0">
+                    <td colspan="8" class="no-data-available">No data!</td>
+                  </tr>
+
+                </tbody>
+              </table>
+          </div>
+          
+          <ng-template #mymodal let-modal style="max-width: 1000px;">
+            <div class="modal-header">
+              <h4 class="modal-title" id="modal-basic-title">Event</h4>
+              <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <form class="w-100" [formGroup]='eventForm' (ngSubmit)="createEvent()">
+              <div class="modal-body">
+                <h4 class="text-dark text-center"><strong>{{event.app_name}}</strong></h4>
+
+                <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">Event Type</label>
+                    <div class="form-check-inline" *ngFor="let x of eventType | keyvalue; let i=index">
+                      <label class="form-check-label checkbox-info">
+                        <input type="radio" class="form-check-input input" formControlName="event_type" [value]="x.value" checked>{{x.value}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">Event Title</label>
+                    <input type='text' class="form-control" formControlName="app_name" placeholder="Enter Event Name" [ngClass]="{ 'is-invalid': submitted && f.app_name.errors }">
+                    <div *ngIf="submitted && f.app_name.errors" class="invalid-feedback">
+                      <div *ngIf="f.app_name.errors.required">App Name is required</div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">App Type</label>
+                    <select class="form-control" formControlName="app_type" value='' [ngClass]="{ 'is-invalid': submitted && f.app_type.errors }">
+                      <option value="" selected>Select App Type</option>
+                      <option [value]="x" *ngFor="let x of appType">{{x}}</option>
+                    </select>
+                    <div *ngIf="submitted && f.app_type.errors" class="invalid-feedback">
+                      <div *ngIf="f.app_type.errors.required">App Type is required</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">Location</label>
+                    <input type='text' class="form-control" formControlName="location" placeholder="Enter Location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
+                    <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
+                      <div *ngIf="f.location.errors.required">Location is required</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="d-block">Start Date</label>
+                      <input type="datetime-local" class="form-control" formControlName="start_date" [min]="today" (change)="maxLimit($event)" placeholder="Start Date" [ngClass]="{ 'is-invalid': submitted && f.start_date.errors }">
+                      <div *ngIf="submitted && f.start_date.errors" class="invalid-feedback">
+                        <div *ngIf="f.start_date.errors.required">Start Date is required</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="d-block">End Date</label>
+                      <input type="datetime-local" class="form-control" formControlName="end_date" min="{{event.start_date}}" placeholder="End Date" value="{{event.end_date}}" [ngClass]="{ 'is-invalid': submitted && f.end_date.errors }">
+                      <div *ngIf="submitted && f.end_date.errors" class="invalid-feedback">
+                        <div *ngIf="f.end_date.errors.required">End Date is required</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">Orientation</label>
+                    <div class="form-check-inline ">
+                      <label class="form-check-label">
+                        <input type="radio" class="form-check-input input" formControlName="orientation" value="Portrait" checked>Portrait
+                      </label>
+                    </div>
+                    <div class="form-check-inline">
+                      <label class="form-check-label">
+                        <input type="radio" class="form-check-input" formControlName="orientation" value="Landscape">Landscape
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">Executive</label>
+                    <select class="form-control" formControlName="exec" value='' [ngClass]="{ 'is-invalid': submitted && f.exec.errors }">
+                      <option value="" selected>Select Executive</option>
+                      <option [value]="x.id" *ngFor="let x of executive">{{x.name}}</option>
+                    </select>
+                    <div *ngIf="submitted && f.exec.errors" class="invalid-feedback">
+                      <div *ngIf="f.exec.errors.required">Please select Executive</div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">Stores</label>
+                    <select class="form-control" formControlName="stores" value='' [ngClass]="{ 'is-invalid': submitted && f.stores.errors }">
+                      <option value="" selected>Select Stores</option>
+                      <option [value]="x.storeId" *ngFor="let x of stores">{{x.storeName}}</option>
+                    </select>
+                    <div *ngIf="submitted && f.stores.errors" class="invalid-feedback">
+                      <div *ngIf="f.stores.errors.required">Please select store</div>
+                    </div>
+
+                  </div>
+                </div> -->
+
+                <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">Order Prefix</label>
+                    <input type="text" class="form-control" formControlName="order_prefix" placeholder="Order Prefix" [ngClass]="{ 'is-invalid': submitted && f.order_prefix.errors }">
+                    <div *ngIf="submitted && f.order_prefix.errors" class="invalid-feedback">
+                      <div *ngIf="f.order_prefix.errors.required">Order prefix is required</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12 form-group">
+                    <label class="d-block">Client</label>
+                    <input type="text" class="form-control" formControlName="client" placeholder="Client Name" [ngClass]="{ 'is-invalid': submitted && f.client.errors }">
+                    <div *ngIf="submitted && f.client.errors" class="invalid-feedback">
+                      <div *ngIf="f.client.errors.required">Client name is required</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            <div class="modal-footer">
+              <!-- <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')"><i class="fa fa-pencil"></i> </button> -->
+              <button type="submit" class="btn btn-outline-dark"><i class="fa fa-pencil"></i> Update </button>
+            </div>
+          </form>
+        </ng-template>
+
+        </div>
+
+
+
+      </div>
+    </div>
+  </main>

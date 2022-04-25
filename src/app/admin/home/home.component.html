@@ -1,0 +1,63 @@
+<!-- Begin page content -->
+<main role="main" class="main-wrapper" id="main">
+    <div class="container mt-5 choose-product text-center">
+      <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-4" *ngIf="role==1 || role==3">
+          <a href="javascript:void(0)" routerLink="/admin/event" >
+            <div class="box bg-white">
+              <img src="assets/img/icons/event.png" alt="" >
+               <h5 class="mt-3">Event Management</h5>
+           </div>
+          </a>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-4" *ngIf="role==1">
+          <a href="javascript:void(0)" routerLink="/admin/print-moderation" >
+            <div class="box bg-white">
+              <img src="assets/img/icons/magic-wand.png" alt="" >
+              <h5 class="mt-3">Print Moderation</h5>
+            </div>
+          </a>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-4">
+          <a href="javascript:void(0)" routerLink="/admin/product" *ngIf="role==1">
+            <div class="box bg-white">
+              <img src="assets/img/icons/print.png" alt="" >
+              <h5 class="mt-3">Product Management</h5>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-4" *ngIf="role==1 || role==3 || role==4">
+          <a routerLink="/admin/app-list">
+          <div class="box bg-white">
+            <img src="assets/img/icons/pen.png" alt="" >
+              <h5 class="mt-3">App Management</h5>
+          </div>
+          </a>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-4" *ngIf="role==1">
+          <a href="javascript:void(0)" routerLink="/admin/gallery">
+            <div class="box bg-white">
+              <img src="assets/img/icons/artwork.png" alt="" >
+              <h5 class="mt-3">Artwork Management</h5>
+            </div>
+          </a>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-4" *ngIf="role==1">
+          <a href="javascript:void(0)" routerLink="/admin/user">
+          <div class="box bg-white">
+            <img src="assets/img/icons/add-user.png" alt="" >
+            <h5 class="mt-3">User Management</h5>
+          </div>
+          </a>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+
+
+
+<!-- END page content -->  

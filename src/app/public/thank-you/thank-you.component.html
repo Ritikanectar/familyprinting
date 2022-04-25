@@ -1,0 +1,26 @@
+<div class="contanier-fluid main-wrapper">
+    <div id="outer" style="z-index: 999999999999;">
+      <div id="table-container">
+          <div id="table-cell" class=" get-started">
+            <h2 class="heading">Thank You</h2>
+            <img *ngIf="thankyou.logo_image!=''" [src]="thankyou.logo_image" class="img-fluid">
+            <!-- <p *ngIf="thankyou.is_message && thankyou.is_message==1">{{thankyou.message}}</p> -->
+            <!-- <div *ngIf="thankyou.is_pickup_ins && thankyou.is_pickup_ins==1">
+                <h4 style="text-shadow: 1px 2px 5px #000; color: #99daf2;">Pick Up Instructions</h4>
+                <label style="text-shadow: 1px 2px 5px #000; color: #99daf2;">{{thankyou.pickup_ins}}</label>
+              </div> -->
+          </div>
+      </div>
+  </div>
+
+
+  <div class="row">
+    <img *ngIf="thankyou.bg_thankyou_file && thankyou.bg_thankyou_file!='' && (thankyou.bg_thankyou_ext=='jpg' || thankyou.bg_thankyou_ext=='jpeg' || thankyou.bg_thankyou_ext=='gif' || thankyou.bg_thankyou_ext=='png'); else noneBg" [src]="thankyou.bg_thankyou_file" class="full-video">
+    <ng-template #noneBg>
+      <div class="full-video" style="background-color: #2D2C2C;"></div>
+        </ng-template>
+    </div>
+    <video autoplay playsinline muted loop id="myVideo" width="100%" style="height: 100% !important;overflow-y: none !important;" oncanplay="this.play()" onloadedmetadata="this.muted = true" *ngIf="thankyou.bg_thankyou_ext=='mp4' || thankyou.bg_thankyou_ext=='avi' || thankyou.bg_thankyou_ext=='mpeg4'">
+        <source [src]="thankyou.bg_thankyou_file" type="video/mp4">
+    </video>
+</div>

@@ -1,0 +1,290 @@
+<style>
+  .invalid-feedback{display: block;}
+</style>
+<main role="main" id="main" class="main-wrapper d-block">
+    <div class="container">
+        <form enctype="multipart/form-data" [formGroup]="productForm" (ngSubmit)="createProduct()">
+       <div class="row pb-2  ">
+         <div class="card rounded p-4">
+          <div class="row ">
+              <div class="col-lg-4 col-md-4 ">
+                <div class="row">
+
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label>Product Name</label>
+                      <input type="text" class="form-control" name="" placeholder="Enter product name" formControlName="product_name" name="product_name" [ngClass]="{ 'is-invalid': submitted && f.product_name.errors }">
+                      <div *ngIf="submitted && f.product_name.errors" class="invalid-feedback">
+                        <div *ngIf="f.product_name.errors.required">Product Name is required</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label>Product Type</label>
+                  </div>
+
+                  <div class="col-md-9 pull-left form-group">
+                    <select class="form-control" formControlName="product_type" name="product_type" [ngClass]="{ 'is-invalid': submitted && f.product_type.errors }">
+                      <option value="">Choose product type</option>
+                      <option *ngFor="let x of productTypes" value="{{x.type_id}}">{{x.product}}</option>
+                    </select>
+                    <div *ngIf="submitted && f.product_type.errors" class="invalid-feedback">
+                      <div *ngIf="f.product_type.errors.required">Product Type is required</div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 pull-right" style="padding-top: 6px;">
+                    <a href="javascript:void(0)" (click)="open(mymodal)" class=" btn btn-primary btn-sm pull-right" title="Add Product Type">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </a> &nbsp;&nbsp;
+                    <a href="javascript:void(0)" (click)="open(mymodalMinus)" class="btn btn-dark btn-sm  pull-right" title="Delete Product Type">
+                      <i class="fa fa-minus" aria-hidden="true"></i>
+                    </a>
+                  </div>
+
+                    <div class="col-12 form-group" formGroupName="product_size">
+                      <label class="d-block">Choose size of your product</label>
+
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="S" name="size[]" formControlName="S">
+                        <label class="form-check-label" for="inlineCheckbox5">S</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="M" name="size[]" formControlName="M">
+                        <label class="form-check-label" for="inlineCheckbox4">M</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="L" name="size[]" formControlName="L">
+                        <label class="form-check-label" for="inlineCheckbox3">L</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="XL" name="size[]" formControlName="XL">
+                        <label class="form-check-label" for="inlineCheckbox2">XL</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="XXL" name="size[]" formControlName="XXL">
+                        <label class="form-check-label" for="inlineCheckbox1">XXL</label>
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>Other Size</label>
+                        <input type="text" class="form-control" name="other_size" placeholder="Size" formControlName="other_size">
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <label>Canvas Size Front (in Pixel)</label>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <input type="no" class="form-control" name="canvas_front_width" formControlName="canvas_front_width" id="canvas_front_width" (change)="frontCanvasChange()" placeholder="Width" [ngClass]="{ 'is-invalid': submitted && f.canvas_front_width.errors }">
+                        <div *ngIf="submitted && f.canvas_front_width.errors" class="invalid-feedback">
+                          <div *ngIf="f.canvas_front_width.errors.required">Canvas front width is required</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <input type="no" class="form-control" name="canvas_front_height" formControlName="canvas_front_height" id="canvas_front_height" (change)="frontCanvasChange()" placeholder="Height" [ngClass]="{ 'is-invalid': submitted && f.canvas_front_height.errors }">
+                        <div *ngIf="submitted && f.canvas_front_height.errors" class="invalid-feedback">
+                          <div *ngIf="f.canvas_front_height.errors.required">Canvas front height is required</div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-12">
+                      <label>Canvas Size Back (in Pixel)</label>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <input type="no" class="form-control" name="canvas_back_width" formControlName="canvas_back_width" id="canvas_back_width" (change)="backCanvasChange()" placeholder="Width" [ngClass]="{ 'is-invalid': submitted && f.canvas_back_width.errors }">
+                        <div *ngIf="submitted && f.canvas_back_width.errors" class="invalid-feedback">
+                          <div *ngIf="f.canvas_back_width.errors.required">canvas back width is required</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <input type="no" class="form-control" name="canvas_back_height" formControlName="canvas_back_height" id="canvas_back_height" (change)="backCanvasChange()" placeholder="Height" [ngClass]="{ 'is-invalid': submitted && f.canvas_back_height.errors }">
+                        <div *ngIf="submitted && f.canvas_back_height.errors" class="invalid-feedback">
+                          <div *ngIf="f.canvas_back_height.errors.required">canvas back height is required</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- <div class="col-12">
+    <div class="form-group inputDnD">
+      <label>Front View SVG</label>
+      <input type="file" class="form-control-file" id="frontSvg" accept="image/*" (change)="onFileSelect($event,'frontviewsvg')" data-title="Upload SVG">
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="form-group inputDnD">
+      <label>Back View SVG</label>
+      <input type="file" class="form-control-file" id="backSvg" accept="image/*" (change)="onFileSelect($event,'backviewsvg')" data-title="Upload SVG">
+    </div>
+  </div> -->
+
+
+                  </div>  
+      
+              </div> 
+        
+              <div class="col-lg-8 col-md-8" formArrayName="product_color">
+
+                <div class="row">
+                  <div class="col-12">
+                    <label>Product Color & Images</label>
+                  </div>
+                  <div class="col-md-12 pull-right pb-2" style="padding-top: 3px;">
+                    <a href="javascript:void(0)" (click)="addColor()" class="btn btn-primary btn-sm" title="Add Product Type">
+                      <i class="fa fa-plus" aria-hidden="true"></i> Add Color And Product Image
+                    </a> &nbsp;&nbsp;
+                  </div>
+
+                  <div class="w-100 pt-3 d-flex" style="max-height:55vh; overflow-y:scroll;flex-wrap: wrap;">
+                  <div class="col-md-6 form-group" *ngFor="let quantity of product_color().controls; let i=index" [formGroupName]="i">
+                    <div class="card p-3" style="position:relative;">
+                      <div class="row" style="position:absolute; top:-15px; right:0px; background:#f5f5f5;border-radius: 50%;z-index: 999;">
+                        <a href="javascript:void(0)" (click)="removeColor(i)" class="btn btn-default  btn-sm" title="Delete Product Type">
+                          <i class="fa fa-times" aria-hidden="true"></i>
+                        </a>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 form-group d-flex">
+                          <input type="color" class="form-control" placeholder="Choose Color" formControlName="color" name="color">
+                        </div>
+                        <div class="col-md-6 form-group d-flex">
+                          <input type="text" class="form-control" placeholder="Color Name" formControlName="color_name" name="color_name">
+                        </div>
+                      </div>
+                   
+
+
+                      <div class="row">
+                        <div class="col-6">
+                          <div class="inputDnD">
+                            
+                            <input type="file" style="display:none" id="frontview{{i}}" name="frontview" formControlName="frontview" accept="image/*" (change)="onFileSelect($event,'frontview',i)">
+                            <span (click)="fileClick('front',i)" style="cursor:pointer; border:dashed 1px grey;display:block; padding:10px;text-align:center">
+                              <span class="frontSpan{{i}}" style="display:block;"></span>
+                              <i class="fa fa-upload"></i> Front Image
+
+                            </span>
+                          </div>
+                          <!--<div *ngIf="submitted && f.frontview.errors" class="invalid-feedback">
+        <div *ngIf="f.frontview.errors.required">Front image is required</div>
+      </div>-->
+                        </div>
+                        <div class="col-6 text-center">
+                          <div class="inputDnD">
+                            
+                            <input type="file" style="display:none" id="backview{{i}}" formControlName="backview" accept="image/*" (change)="onFileSelect($event,'backview',i)" data-title="Back Image Upload">
+                            <span (click)="fileClick('back',i)" style="cursor:pointer; border:dashed 1px grey;display:block; padding:10px;text-align:center">
+                              <span class="backSpan{{i}}" style="display:block;"></span>
+                              <i class="fa fa-upload"></i> Back Image
+                            </span>
+                          </div>
+                          <!--  [ngClass]="{ 'is-invalid': submitted && f.backview.errors }"  <div *ngIf="submitted && f.backview.errors" class="invalid-feedback">
+        <div *ngIf="f.backview.errors.required">Back image is required</div>
+      </div>-->
+                        </div>
+                      </div>
+
+                    </div>
+                      <!--<div class="row">
+                        <div class="col-6 text-center">
+                          <img src="assets/img/file-preview.jpg" width="100" height="100" class=" frontblock{{i}}" style="object-fit:contain">
+                        </div>
+                        <div class="col-6 text-center">
+                          <img src="assets/img/file-preview.jpg" width="100" height="100" class=" backblock{{i}}" style="object-fit:contain">
+                        </div>
+                      </div>-->
+                    </div>
+                  </div>
+                </div>
+
+                  
+
+                  <!--<div class="row">
+        <div class="col-6 my-auto text-center">
+            <img src="assets/img/file-preview.jpg" width="100%" height="auto" class="img-fluid frontblock">
+        </div>
+        <div class="col-6 my-auto text-center">
+            <img src="assets/img/file-preview.jpg"  width="100%" height="auto" class="img-fluid backblock">
+        </div>
+    </div>-->
+
+                  <div class="row">
+                    <div class="col-lg-12 mt-2 text-center">
+                      <button type="submit" class="btn btn-primary btn-lg col-2"> Create </button>
+                      <a href="javascript:void(0)" style="margin-left: 5px;" routerLink="/admin/product" class="btn btn-dark  col-2 btn-lg"> Back </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>    
+        </div>
+       </form>
+
+       <ng-template #mymodal let-modal style="max-width: 1000px;">
+          <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Product Type</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <form class="w-100" [formGroup]="productTypeForm" (ngSubmit)="createProductType()">
+          <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label>Product Type Name</label>
+                      <input type="text" class="form-control" placeholder="Enter name of product Type" formControlName="product_type_name" name="product_type_name" [ngClass]="{ 'is-invalid': submittedPT && fPt.product_type_name.errors }">
+                      <div *ngIf="submittedPT && fPt.product_type_name.errors" class="invalid-feedback">
+                        <div *ngIf="fPt.product_type_name.errors.required">Product Type Name is required</div>
+                        </div>
+                    </div>  
+                  </div>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-outline-dark"><i class="fa fa-pencil"></i> Add </button>
+          </div>
+        </form>
+      </ng-template>
+
+      <ng-template #mymodalMinus let-modal style="max-width: 1000px;">
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Product Type</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label>Product Type</label>
+                    <select class="form-control" name="product_type_remove" id="product_type_remove" (change)="checkErrPType()">
+                        <option value="">Choose product type</option>
+                        <option *ngFor="let x of productTypes" value="{{x.type_id}}">{{x.product}}</option>
+                    </select>
+                    <div *ngIf="product_type_error" class="invalid-feedback">
+                      <div style="color:red">Please Select Product Type</div>
+                    </div>
+                  </div>  
+                </div>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="removeProductType()"><i class="fa fa-trash"></i> Remove </button>
+        </div>
+    </ng-template>
+
+    </div>
+ </main>
