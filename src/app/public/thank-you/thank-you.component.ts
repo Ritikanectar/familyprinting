@@ -49,10 +49,12 @@ export class ThankYouComponent implements OnInit {
               window.location.replace(data.thankyou.redirect_url);
               
             }else{
+              var removeurl = this.urldata.user;
+              removeurl = removeurl.substring(0, removeurl.indexOf('_')); 
+              console.log(removeurl);
               setTimeout(() => {
-              // window.location.href = "http://localhost:4200/#/landing/"+this.urldata.event+"/"+this.urldata.user;
-               window.location.replace("http://fpuat.nectarinfotel.com/#/landing/"+this.urldata.event+"/"+this.urldata.user);
-                //window.open("http://localhost:4200/#/landing/"+this.urldata.event+"/"+this.urldata.user);  
+              // window.location.replace("http://fpuat.nectarinfotel.com/#/landing/"+this.urldata.event+"/"+this.urldata.user);
+               window.location.replace("http://fpuat.nectarinfotel.com/#/landing/"+this.urldata.event+"/"+removeurl);
               }, 5000);
             }
           

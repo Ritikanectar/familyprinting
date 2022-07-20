@@ -74,11 +74,11 @@ export class ProductComponent implements OnInit {
             var fheight = $('.resize_front_height'+i).val();
             if(fwidth != ''){
               fwidth = Math.round(fwidth);
-              canwidth = 'width:'+fwidth+'px;';
+              canwidth = 'width:'+fwidth+'cm;';
               
             } if(fheight != ''){
               fheight = Math.round(fheight);
-              canheight = 'height:'+fheight+'px;';
+              canheight = 'height:'+fheight+'cm;';
             }
             if(fheight != '' || fwidth != ''){
               candisplay = 'display:block';
@@ -110,11 +110,11 @@ export class ProductComponent implements OnInit {
             var bheight = $('.resize_back_height'+i).val();
             if(bwidth != ''){
               bwidth = Math.round(bwidth);
-              canbwidth = 'width:'+bwidth+'px;';
+              canbwidth = 'width:'+bwidth+'cm;';
               
             } if(bheight != ''){
               bheight = Math.round(bheight);
-              canbheight = 'height:'+bheight+'px;';
+              canbheight = 'height:'+bheight+'cm;';
             }
             if(bheight != '' || bwidth != ''){
               canbdisplay = 'display:block';
@@ -147,57 +147,81 @@ export class ProductComponent implements OnInit {
   frontCanvasChange(i:any){
     // var width = ($("#canvas_front_width").val()/70)*10;
     // var height = ($("#canvas_front_height").val()/70)*10;
-    var width = ($("#front_width"+i).val()/30)*10;
-    var height = ($("#front_height"+i).val()/30)*10;
+    // var width = ($("#front_width"+i).val()/30)*10;
+    // var height = ($("#front_height"+i).val()/30)*10;
+    var width = $("#front_width"+i).val();
+    var height = $("#front_height"+i).val();
     if($(".frontCanvas"+i).length){
-      $(".frontCanvas"+i).css('width',width+'px');
-      $(".frontCanvas"+i).css('height',height+'px');
+      $(".frontCanvas"+i).css('width',width+'cm');
+      $(".frontCanvas"+i).css('height',height+'cm');
       $(".frontCanvas"+i).css('display','block');
       this.draggingfront(i);
     }
+
+    var el: any
+    el = document.querySelector('.frontCanvas'+i);
+    var gbcr = el.getBoundingClientRect();
+    var elwidth = gbcr.width;
+    var elheight = gbcr.height;
     
-    $('.resize_front_width'+i).val(width);
-    $('.resize_front_height'+i).val(height);
-    $('.canvas_front_top'+i).val(0);
-    $('.canvas_front_left'+i).val(0);
-    $('.front_transform'+i).val('1');
+    $('.resize_front_width'+i).val(elwidth);
+    $('.resize_front_height'+i).val(elheight);
+      
+    // $('.resize_front_width'+i).val(width);
+    // $('.resize_front_height'+i).val(height);
+    // $('.canvas_front_top'+i).val(0);
+    // $('.canvas_front_left'+i).val(0);
+    // $('.front_transform'+i).val('1');
     var candata = {
-      width: width,
-      height: height,
-      top: 0,
-      left: 0,
-      transform:'1'
+      width: elwidth,
+      height: elheight,
+      top: $('.canvas_front_top'+i).val(),
+      left: $('.canvas_front_left'+i).val(),
+      transform:$('.front_transform'+i).val()
   }
     this.frontcanvasresize[i] = candata;
 
     
   }
   backCanvasChange(i:any){
-    var width = ($("#back_width"+i).val()/30)*10;
-    var height = ($("#back_height"+i).val()/30)*10;
+    // var width = ($("#back_width"+i).val()/30)*10;
+    // var height = ($("#back_height"+i).val()/30)*10;
+    var width = $("#back_width"+i).val();
+    var height = $("#back_height"+i).val();
     if($(".backCanvas"+i).length){
-      $(".backCanvas"+i).css('width',width+'px');
-      $(".backCanvas"+i).css('height',height+'px');
+      $(".backCanvas"+i).css('width',width+'cm');
+      $(".backCanvas"+i).css('height',height+'cm');
       $(".backCanvas"+i).css('display','block');
       this.draggingback(i);
     }
-    $('.resize_back_width'+i).val(width);
-    $('.resize_back_height'+i).val(height);
-    $('.canvas_back_top'+i).val(0);
-    $('.canvas_back_left'+i).val(0);
-    $('.back_transform'+i).val('1');
+
+    var el: any
+    el = document.querySelector('.backCanvas'+i);
+    var gbcr = el.getBoundingClientRect();
+    var elwidth = gbcr.width;
+    var elheight = gbcr.height;
+    
+    $('.resize_back_width'+i).val(elwidth);
+    $('.resize_back_height'+i).val(elheight);
+
+    
+    // $('.resize_back_width'+i).val(width);
+    // $('.resize_back_height'+i).val(height);
+    // $('.canvas_back_top'+i).val(0);
+    // $('.canvas_back_left'+i).val(0);
+    // $('.back_transform'+i).val('1');
     var candata = {
-      width: width,
-      height: height,
-      top: 0,
-      left: 0,
-      transform:'1'
+      width: elwidth,
+      height: elheight,
+      top: $('.canvas_back_top'+i).val(),
+      left: $('.canvas_back_left'+i).val(),
+      transform:$('.back_transform'+i).val()
   }
     this.backcanvasresize[i] = candata;
     
   }
   draggingfront(i:any){
-    
+    console.log('999999999');
     var el: any
     
     var fcra = this.frontcanvasresize;
@@ -242,6 +266,7 @@ export class ProductComponent implements OnInit {
       }
       
       fcra[i] = candata;
+      console.log(candata);
     }
     //this.pinchzoomdata(i);
    
@@ -304,6 +329,7 @@ export class ProductComponent implements OnInit {
   },2000);}
 
   setZoom(event: any,k:any) {
+    console.log('jkjkj');
     // var idval = '#'+a+k;
     // var zoom = $(idval).val()/10;
     if($(".frontCanvas"+k).length)
@@ -395,7 +421,7 @@ setZoomBack(event: any,k:any) {
     initial_mouse_Y = 0;
   
   function apply_coords() {
-    
+    console.log('111111');
     $(".backCanvas"+i).css("transform", 'perspective(100px) translate3d(' + translateX + 'px, ' + translateY + 'px, ' + translateZ + 'px)');
     $(".backCanvas"+i).css("border", '3px dotted');
     var gbcrb = $(".backCanvas"+i)[0].getBoundingClientRect();
@@ -463,7 +489,7 @@ setZoomBack(event: any,k:any) {
     initial_mouse_Y = 0;
   
   function apply_coords() {
-    
+    console.log('hhghg');
     $(".frontCanvas"+i).css("transform", 'perspective(100px) translate3d(' + translateX + 'px, ' + translateY + 'px, ' + translateZ + 'px)');
     $(".frontCanvas"+i).css("border", '3px dotted');
     var gbcr = $(".frontCanvas"+i)[0].getBoundingClientRect();
@@ -762,7 +788,7 @@ setZoomBack(event: any,k:any) {
       var i = 0;
       var num = 0;
       $.each(this.prodColors, function (k:any , v:any) {
-
+console.log(that.prodColors[k]);
         that.product_color().push(
           that.formBuilder.group({
             color: k,
@@ -776,9 +802,13 @@ setZoomBack(event: any,k:any) {
             backview: '',
             resize_front_height: that.prodColors[k].resize_front_height,
             resize_front_width: that.prodColors[k].resize_front_width,
+            //  resize_front_height: that.prodColors[k].front_canvas_height,
+            // resize_front_width: that.prodColors[k].front_canvas_width,
             front_transform: that.prodColors[k].front_canvas_transform,
             resize_back_height: that.prodColors[k].resize_back_height,
             resize_back_width:  that.prodColors[k].resize_back_width,
+            //  resize_back_height: that.prodColors[k].back_canvas_height,
+            // resize_back_width:  that.prodColors[k].back_canvas_width,
             back_transform: that.prodColors[k].back_canvas_transform,
             canvas_front_left: that.prodColors[k].front_canvas_left,
             canvas_front_top: that.prodColors[k].front_canvas_top,
@@ -790,6 +820,8 @@ setZoomBack(event: any,k:any) {
         var candata = {
           width: that.prodColors[k].resize_front_width,
           height: that.prodColors[k].resize_front_height,
+          // width: that.prodColors[k].front_canvas_width,
+          // height: that.prodColors[k].front_canvas_height,
           top: that.prodColors[k].front_canvas_top,
           left: that.prodColors[k].front_canvas_left,
           transform: that.prodColors[k].front_canvas_transform
@@ -798,6 +830,8 @@ setZoomBack(event: any,k:any) {
         var canbdata = {
           width: that.prodColors[k].resize_back_width,
           height: that.prodColors[k].resize_back_height,
+          // width: that.prodColors[k].back_canvas_width,
+          // height: that.prodColors[k].back_canvas_height,
           top: that.prodColors[k].back_canvas_top,
           left: that.prodColors[k].back_canvas_left,
           transform: that.prodColors[k].back_canvas_transform
@@ -839,18 +873,18 @@ setZoomBack(event: any,k:any) {
           // var width = ($("#canvas_front_width").val()/20)*10;
           // var height = ($("#canvas_front_height").val()/20)*10;
           var width = that.prodColors[k].front_canvas_width;
-          width = width/3;
+          width = width;
           var height = that.prodColors[k].front_canvas_height;
-          height = height/3;
-          $(".frontCanvas"+i).css('width',width+'px');
-          $(".frontCanvas"+i).css('height',height+'px');
+          height = height;
+          $(".frontCanvas"+i).css('width',width+'cm');
+          $(".frontCanvas"+i).css('height',height+'cm');
 
           var bwidth = that.prodColors[k].back_canvas_width;
           var bheight = that.prodColors[k].back_canvas_height;
-          bwidth = bwidth/3;
-          bheight = bheight/3;
-          $(".backCanvas"+i).css('width',bwidth+'px');
-          $(".backCanvas"+i).css('height',bheight+'px');
+          bwidth = bwidth;
+          bheight = bheight;
+          $(".backCanvas"+i).css('width',bwidth+'cm');
+          $(".backCanvas"+i).css('height',bheight+'cm');
           that.draggingfront(i);
           that.draggingback(i);
          // that.frontPic[i] = that.prodColors[k].frontFile;

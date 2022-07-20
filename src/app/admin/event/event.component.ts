@@ -26,7 +26,7 @@ export class EventComponent implements OnInit {
   appType:any = [];
   eventType:any = [];
   executive:any = [{'name':'','id':0}];
-  events = [{'app_name':'','event_type':'','start_datetime':'','end_datetime':'','event_place':'','event_id':'','name':'','client':''}];
+  events = [{'app_name':'','event_type':'','pagewidth':'','pageheight':'','start_datetime':'','end_datetime':'','event_place':'','event_id':'','name':'','client':''}];
   eventForm!: FormGroup;
   submitted = false;
   exec:string = ""; message:string = "";
@@ -85,6 +85,8 @@ export class EventComponent implements OnInit {
     this.eventForm = this.formBuilder.group({
       app_name: ['', Validators.required],
       app_type: ['', Validators.required],
+      pagewidth: ['', Validators.required],
+      pageheight: ['', Validators.required],
       event_type: [''],
       start_date: ['', Validators.required],
       end_date: ['', [Validators.required]],
@@ -131,7 +133,7 @@ export class EventComponent implements OnInit {
     this.http.post(this.url+'get-event',{event_id:evID},this.httpOptions).subscribe((data:any)=>{
       this.event = data.event;
       console.log(this.event);
-      this.eventForm.patchValue({app_name:data.event.app_name,location: data.event.event_place,
+      this.eventForm.patchValue({app_name:data.event.app_name,pagewidth:data.event.pagewidth,pageheight:data.event.pageheight,location: data.event.event_place,
                                  app_type:data.event.app_type,event_type:data.event.event_type,
                                  start_date:data.event.start_date,end_date:data.event.end_datetime,
                                  order_prefix: data.event.order_prefix,

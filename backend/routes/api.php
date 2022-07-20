@@ -95,3 +95,4 @@ Route::get('/get-product-layout','PublicController@get_product_layout');
 Route::get('/search-customers','PublicController@search_customers');
 
 Route::get('/get-product-property','PublicController@get_product_property');
+Route::post('/save-pdf','PublicController@save_pdf');

@@ -113,6 +113,7 @@ export class PrintModerationComponent implements OnInit {
     this.urldata.product = order.product_id;
     this.urldata.order_id = order.order_id;
     this.urldata.productColor = order.product_color;
+    this.urldata.pdf_file_name = order.pdf_file_name;
 
     this.http.post(this.url+'get-print-prop',this.urldata).subscribe((data:any)=>{
       console.log(data);

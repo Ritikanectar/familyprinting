@@ -75,9 +75,12 @@
                         </a>
                     </ng-template>
                         <a href="{{app.link}}" target="__change" class="btn btn-primary btn-sm m-1" data-toggle="modal" data-target="#exampleModalCenter" title="Visit Site"><i class="fa fa-eye"></i></a>
-                        <a href="javascript:void(0)" title="Configure" class="btn btn-danger text-white btn-sm m-1" routerLink="/admin/new-app/{{app.event_id}}/{{(app.wl_id==null)? 1:(app.rg_id==null? 2:(app.pr_id==null? 3:(app.pd_id==null? 4:(app.pv_id==null? 5:(app.ty_id==null? 6:(app.ui_id==null? 7:0))))))}}" *ngIf="app.wl_id==null || app.rg_id==null || app.pr_id==null || app.pd_id==null || app.pv_id==null || app.ty_id==null || app.ui_id==null; else configured">
+                        <a href="javascript:void(0)" title="Configure" class="btn btn-danger text-white btn-sm m-1" routerLink="/admin/new-app/{{app.event_id}}/0" *ngIf="app.wl_id==null || app.rg_id==null || app.pr_id==null || app.pd_id==null || app.pv_id==null || app.ty_id==null || app.ui_id==null; else configured">
                           <i class="fa fa-pencil"></i>
                         </a>
+                        <!-- <a href="javascript:void(0)" title="Configure" class="btn btn-danger text-white btn-sm m-1" routerLink="/admin/new-app/{{app.event_id}}/{{(app.wl_id==null)? 1:(app.rg_id==null? 2:(app.pr_id==null? 3:(app.pd_id==null? 4:(app.pv_id==null? 5:(app.ty_id==null? 6:(app.ui_id==null? 7:0))))))}}" *ngIf="app.wl_id==null || app.rg_id==null || app.pr_id==null || app.pd_id==null || app.pv_id==null || app.ty_id==null || app.ui_id==null; else configured">
+                          <i class="fa fa-pencil"></i>
+                        </a> -->
                         
                         <a href="{{url+'get-order-xml?event='+app.event_id}}" target="__change" class="btn btn-primary btn-sm m-1" title="XML Data">
                           <i class="fa fa-file-code-o"></i>

@@ -180,6 +180,7 @@ class PublicController extends Controller
       if($request->product_id){
         $event_id = Crypt::decryptString($request->event_id);
         $user_id = Crypt::decryptString($request->user_id);
+        $client_id = $request->client_id;
        
         $product = Product::where('fp_product.product_id',$request->product_id)->first();
         
@@ -212,8 +213,13 @@ class PublicController extends Controller
         $uiElement = UiElementApp::where('event_id',$event_id)->first();
         $preview = PreviewApp::where('event_id',$event_id)->first();
 
+        $eventsdata = Event::select('fp_event.app_name')
+        ->where('event_id',$event_id)->first();
+
+        $registration = Registration::select('first_name','last_name')
+        ->where('reg_id',$client_id)->first();
         
-        return response()->json(['product'=>$product,'productProp'=>$productProp,'uiElement'=>$uiElement,'preview'=>$preview,'gallery'=>$gallery,'frontSvg'=>$frontSvg,'backSvg'=>$backSvg,'prod_colors'=>$colorProd,'flag'=>TRUE],200);
+        return response()->json(['product'=>$product,'productProp'=>$productProp,'uiElement'=>$uiElement,'preview'=>$preview,'gallery'=>$gallery,'frontSvg'=>$frontSvg,'backSvg'=>$backSvg,'prod_colors'=>$colorProd,'pid'=>$request->product_id,'eveid'=>$event_id,'registration'=>$registration,'eventData'=>$eventsdata,'flag'=>TRUE],200);
       }
       return response()->json(['msg'=>'No data found','flag'=>FALSE],204);
     }
@@ -272,10 +278,12 @@ class PublicController extends Controller
       }
 
       if($request->event_id){
-
+        $pageheight = 792;
+        $pagewidth = 612; 
+        $orientation = 'p';
         $prefix = array('order_prefix'=>'');
         $eventType = '';
-        $prefix = Event::select('order_prefix','event_type')
+        $prefix = Event::select('order_prefix','event_type','pagewidth','pageheight','orientation')
                    ->where([
                       ['event_id', '=', Crypt::decryptString($request->event_id)],
                       ['is_active','=',1]
@@ -283,6 +291,19 @@ class PublicController extends Controller
         if($prefix->count()>0){
           $prefix = $prefix->first();
           $eventType = $prefix['event_type'];
+          if($prefix['pageheight'] != '' && !empty($prefix['pageheight']) && $prefix['pageheight'] != null){
+            $pageheight = $prefix['pageheight']*28.346;
+          }
+          if($prefix['pagewidth'] != '' && !empty($prefix['pagewidth']) && $prefix['pagewidth'] != null){
+            $pagewidth = $prefix['pagewidth']*28.346;
+          }
+          if($prefix['orientation'] == 'Landscape'){
+            $orientation = 'l';
+          }
+          if($prefix['orientation'] == 'Portrait'){
+            $orientation = 'p';
+          }
+
         }
         $recieptNum = $prefix['order_prefix'].'000001';
         $orders = Orders::select('order_id','reciept_id')
@@ -293,6 +314,8 @@ class PublicController extends Controller
           preg_match_all('!\d+!', $order['reciept_id'] , $num);
           $recieptNum = $prefix['order_prefix'].str_pad(++$num[0][0], 6, '0', STR_PAD_LEFT);
         }
+
+        $pdffilename = $recieptNum.time().'.pdf';
 
         $orders = new Orders;
         $orders->reciept_id = $recieptNum;
@@ -309,6 +332,7 @@ class PublicController extends Controller
         $orders->created_by = 1;
         $orders->created_date = date('Y-m-d H:i:s');
         $orders->is_active = 1;
+        $orders->pdf_file_name = $pdffilename;
         if($orders->save()){
 
           if($eventType=='Virtual'){
@@ -352,13 +376,33 @@ class PublicController extends Controller
             $order->items[] = $item;
             $shipStation->orders->post($order, 'createorder');
           }
-          return response()->json(['msg'=>'Success','eventType'=>$eventType,'flag'=>TRUE],200);
+          return response()->json(['msg'=>'Success','orientation'=>$orientation,'pageheight'=>$pageheight,'pagewidth'=>$pagewidth,'orderid'=>$orders->id,'eventType'=>$eventType,'pdffilename'=>$pdffilename,'flag'=>TRUE],200);
         }
       }
       //return response()->json(['msg'=>'Success','flag'=>TRUE],200);
     }
     return response()->json(['msg'=>'Failed','flag'=>FALSE],200);
   }
+
+    public function save_pdf(Request $request){
+      
+              if(!empty($_FILES['pdf'])) {
+                // PDF is located at $_FILES['data']['tmp_name']
+                
+                $content = file_get_contents($_FILES['pdf']['tmp_name']);
+                //echo $content;
+                $location = "uploads/pdffiles/";
+                $filename = $request->filename;
+                move_uploaded_file($_FILES['pdf']['tmp_name'], $location.$filename);
+                return response()->json(['msg'=>'Success','flag'=>TRUE],200);
+                
+                  } else {
+                
+                return response()->json(['msg'=>'Failed','flag'=>FALSE],200);
+                  }
+             
+
+    }
 
   public function create_print_prop_old(Request $request){
 

@@ -197,10 +197,10 @@ export class CreateProductComponent implements OnInit {
   frontCanvasChange(i:any){
     // var width = ($("#canvas_front_width").val()/70)*10;
     // var height = ($("#canvas_front_height").val()/70)*10;
-    var width = ($("#front_width"+i).val()/30)*10;
-    var height = ($("#front_height"+i).val()/30)*10;
-    $(".frontCanvas"+i).css('width',width+'px');
-    $(".frontCanvas"+i).css('height',height+'px');
+    var width = $("#front_width"+i).val();
+    var height = $("#front_height"+i).val();
+    $(".frontCanvas"+i).css('width',width+'cm');
+    $(".frontCanvas"+i).css('height',height+'cm');
     $(".frontCanvas"+i).css('display','block');
 
     $('.resize_front_width'+i).val(width);
@@ -220,10 +220,10 @@ export class CreateProductComponent implements OnInit {
     this.draggingfront(i);
   }
   backCanvasChange(i:any){
-    var width = ($("#back_width"+i).val()/30)*10;
-    var height = ($("#back_height"+i).val()/30)*10;
-    $(".backCanvas"+i).css('width',width+'px');
-    $(".backCanvas"+i).css('height',height+'px');
+    var width = $("#back_width"+i).val();
+    var height = $("#back_height"+i).val();
+    $(".backCanvas"+i).css('width',width+'cm');
+    $(".backCanvas"+i).css('height',height+'cm');
     $(".backCanvas"+i).css('display','block');
 
     $('.resize_back_width'+i).val(width);
@@ -360,7 +360,7 @@ export class CreateProductComponent implements OnInit {
     // console.log(a);
     // console.log(zoom);
     // console.log(el);
-	  var transformOrigin:any;
+    var transformOrigin:any;
     transformOrigin = [0,0];
     el = el ;
     var p = ["webkit", "moz", "ms", "o"],

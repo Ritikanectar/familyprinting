@@ -9,6 +9,10 @@ import 'jqueryui';
 import {NgbModal, ModalDismissReasons, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 import { fabric } from 'fabric';
+import { jsPDF } from 'jspdf';
+//import { exit } from 'process';
+//import { exit } from 'process';
+
 
 //import html2canvas from 'html2canvas';
 // import { NgxCaptureService } from 'ngx-capture';
@@ -49,6 +53,9 @@ export class PrintingComponent implements OnInit, AfterViewInit {
   pageLoaded:boolean = false;
   hovered:number = -1; hoveredArtwork:number = -1;
   hoveredToggleProd:number = -1; hoveredToggleArt:number = -1; hoveredToggleTxt:number = -1;
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': "Bearer " + localStorage.getItem('token') }),
+  };
   /*************** New Canvas Declarations ******************/
   canvas: any = undefined;
   textString: any='';
@@ -183,7 +190,6 @@ export class PrintingComponent implements OnInit, AfterViewInit {
     this.productID = pidsz[0];
     this.productSize = pidsz[1];
     this.pColor = pidsz[2];
-    
    }
    
    switchMenu(menu:string){
@@ -371,11 +377,7 @@ export class PrintingComponent implements OnInit, AfterViewInit {
         element.style.height = backheightfcanvase.value;
       }
       
-    }
-
-   
-
-     
+    }  
     
    }
    
@@ -900,21 +902,7 @@ export class PrintingComponent implements OnInit, AfterViewInit {
   backUIActive:any;
   BackUI:any = [];
   addImageOnSvg(x1:any,i:any){
-
-    // setTimeout(() => {
-    //   var c = <HTMLCanvasElement>document.getElementById("canvasArea");
-    //   var ctx = c.getContext("2d");
-    //   var img:any = document.getElementById("clipArtIMG"+i);
-    //   var image:any = new Image();
-    //   image.src = $("#clipArtIMG"+i).attr('src');
-    //   <any>ctx?.drawImage(image, 0, 0, 100, 50);
-    // }, 1000);
-
-    // $("svg").append(this.parseSvg(
-    //   '<image href="http://localhost:8000/uploads/'+x1.artwork_image+'" height="150" width="150" (cdkDragEnded)="drop($event)" onclick="test()" cdkDrag style="height: 200px;width: 200px;" x="300" y="300"></image>'
-    // ));
-    //if($(".imgArea").find(".imageArea"+this.cl[this.id]).length > 0){
-      
+    
     $(".imgArea").css("width","100px");
     $(".imgArea").css("height","100px");
       var tempID = this.id; 
@@ -1043,10 +1031,12 @@ export class PrintingComponent implements OnInit, AfterViewInit {
   fCanvasHeight:any; bCanvasHeight:any;
   frontProduct:string=''; backProduct:string='';
   printLocation:string = 'both'; scale:string = "scalable";
-  
-
-
-
+  username:string = '';
+  eventname:string ='';
+  front_canvas_actual_width = 0;
+  front_canvas_actual_height = 0;
+  back_canvas_actual_width = 0;
+  back_canvas_actual_height = 0;
   
   addLayer(){
     var activeObject = this.canvas.getActiveObject() == null ? '' : this.canvas.getActiveObject();
@@ -1113,50 +1103,6 @@ addFontSpace(event:any){
   else
     this.canvasBack.renderAll();
 }
-//////////////////////////////////////////////////////////////////////////////////
-
-
-//  addListeners(){
-//    console.log('add');
-//   var elem = <HTMLInputElement>document.getElementById('canvas');
-//   console.log(elem);
-//   elem.addEventListener('mousedown', function(){
-//     console.log('musedouwn');
-//     var elemd = <HTMLInputElement>document.getElementById('canvas');
-//     // elemd.addEventListener('mousemove', this.divMove, true);
-//   }, true);
-//   elem.addEventListener('mouseup',this.mouseUp, true);
-
-// }
-//  removeListeners(){
-//   console.log('remove');
-//   var elem = <HTMLInputElement>document.getElementById('canvas');
-//   elem.removeEventListener('mousedown', this.mouseDown, true);
-//   elem.removeEventListener('mouseup', this.mouseUp, true);
-
-// }
-
-
-//  mouseUp()
-// {
-//   console.log('mouseUp');
-//   var elemt = <HTMLInputElement>document.getElementById('canvas');
-//   elemt.removeEventListener('mousemove', this.divMove, true);
-// }
-
-//  mouseDown(){
-//    console.log('musedouwn');
-//   var elemd = <HTMLInputElement>document.getElementById('canvas');
-//   elemd.addEventListener('mousemove', this.divMove, true);
-// }
-
-//  divMove(e:any){
-//   console.log('divMove');
-//   var div = <HTMLInputElement>document.getElementById('canvas');
-// div.style.position = 'absolute';
-// div.style.top = e.clientY + 'px';
-// div.style.left = e.clientX + 'px';
-// }
 //////////////////////////////////////////////////////////////////////////////////
 
 draggingfront(){
@@ -1583,32 +1529,9 @@ addImageCanvas(x:any,i:any){
     }
   });
 
-
-
-
-
-    
-
-  //   this.canvas.setBackgroundImage(this.product.file, this.canvas.renderAll.bind(this.canvas), {
-  //     scaleX: that.canvas.width / this.product.file.width,
-  //     scaleY: that.canvas.height / this.product.file.height
-  //  });
-
-    // this.canvas.style.position = 'absolute';
-    // this.canvas.style.top = 133;
-  //}
-  
  
 }
 
-
-
-
-
-
-
-
-  
   prodClr: any = {frontview:'',backview:''};
   canvasBack: any;
 
@@ -1726,19 +1649,13 @@ bcanvaszooming.addEventListener("wheel", function(optb: any) {
 
 })
 
-
-// that.canvas.on('mouse:dblclick', function(opt: any) {
-//   console.log('innnn999');
- 
-// })
-
 //=========End Canvas Move===========
     this.textString = null;
     this.OutputContent = null;
     
     console.log("user_id:" + this.userID,"product_id:"+this.productID, "psize:"+ this.productSize, "pColor:"+ this.pColor);
 
-    this.http.post(this.url + 'get-product-details', { event_id: this.evID, user_id: this.userID, product_id: this.productID, psize: this.productSize, pColor: this.pColor }).subscribe((data: any) => {
+    this.http.post(this.url + 'get-product-details', { event_id: this.evID, user_id: this.userID, product_id: this.productID, psize: this.productSize, pColor: this.pColor, client_id:this.clientID }).subscribe((data: any) => {
 
       if(data.flag){
         this.product = data.product;
@@ -1746,7 +1663,9 @@ bcanvaszooming.addEventListener("wheel", function(optb: any) {
         
         this.printLocation = data.productProp.print_location;
         this.scale = data.productProp.product_option;
-
+        this.username = data.registration.first_name+' '+data.registration.last_name;
+        this.eventname = data.eventData.app_name;
+        
         $.each(data.prod_colors, function (k, rows: any) {
           
           if (rows.frontview_file != '') {
@@ -1765,6 +1684,8 @@ bcanvaszooming.addEventListener("wheel", function(optb: any) {
             that.fCanvasHeight = fheight;
             that.canvas.setWidth(fwidth);
             that.canvas.setHeight(fheight);
+            // that.canvas.style.width = fwidth+'cm';
+            // that.canvas.style.height = fheight+'cm';
 
           } else if (rows.backview_file != '') {
             that.prodClr.backview = that.appurl + rows.backview_file;
@@ -1800,55 +1721,21 @@ bcanvaszooming.addEventListener("wheel", function(optb: any) {
           this.activeText = "Back";
           this.isBoth = true;
         }
-        //console.log(data.productProp);
-        
         this.product.svg = data.frontSvg;
         this.uiElement = data.uiElement;
         this.preview = data.preview;
         
-
-        //  $(".svgCont").html(this.product.svg);
-        // $("svg.prodSvg").append(this.parseSvg(
-        //   '<rect width="300" height="100" style="stroke:rgb(0,0,0);stroke: #000000;stroke-width: 3;stroke-dasharray: 10 5;fill: none;width:'+data.product.canvas_front_width+'px;height:'+data.product.canvas_front_height+'px" x="300" y="300" />'
-        // ));
-
-        // $("svg.prodSvg").append(this.parseSvg(
-        //   '<image href="http://localhost:8000/uploads/gallery/1/clipArt/cb0cacfe6909654f077e0423a3c227ab.jpg" height="50" width="50" style="height: 150px;width: 150px;" x="45" y="98"></image>'
-        // ));
-
-        // var img = '<image href="https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png" height="50" width="50" style="height: 50px;width: 50px;"></image>';
-        
-
-        // $(".svgCont").find('svg g').append(img);
-        // var c = document.getElementById("myCanvas");
-        // var ctx = c.getContext("2d");
-        // var img = document.getElementById("scream");
-        // ctx.drawImage(img, 10, 10);
-
-
         this.gallery = data.gallery;
       }
       this.pageLoaded=true;
     },(error:any)=>{ console.log(error) });
 
-    // this.renderer.listen(document.getElementsByClassName("dynamicPic"), 'click',(e:Event)=>{
-    //   alert("test");
-    // });
     var that = this;
     setTimeout(function(){
       that.getBGCanvas();
     },2000);
-    // if(this.product.file!='' || this.product.file!=undefined){
-      
-    // }
   }
 
-  // clickedMe(event:any){
-
-  //   if (!$(event.target).closest('.dynamicPic').length) {
-      
-  //   }
-  // }
 
   switchProductView(side:string){
     var tempView = this.product.file;
@@ -1891,65 +1778,53 @@ bcanvaszooming.addEventListener("wheel", function(optb: any) {
 
   print:any = {front:{width:[],height:[],size:[],image:[],left:[],top:[],right:[],rotate:[],zindex:[],text1:{},text2:{}},
                back:{width:[],height:[],size:[],image:[],left:[],top:[],right:[],rotate:[],zindex:[],text1:{},text2:{}}};
+
+              
   saveProduct(){
-    /*this. print = {front:{width:[],height:[],size:[],image:[],left:[],top:[],right:[],rotate:[],zindex:[],text1:{},text2:{}},
-    back:{width:[],height:[],size:[],image:[],left:[],top:[],right:[],rotate:[],zindex:[],text1:{},text2:{}}};*/
+
+
+    //--------PDF--------------------
+//     var pdf = new jsPDF({
+//       orientation: 'p', // landscape
+//       unit: 'pt', // points, pixels won't work properly
+//        format: [1064.891, 765.354] // set needed dimensions for any element 612(21.59)*792(27.94),25*35.567
+//      // format: [data.pageheight, data.pagewidth] // set needed dimensions for any element 612(21.59)*792(27.94)
+      
+//     }); 
+//     if(this.printLocation == 'back_only'){
+//       var imgData = this.canvasBack.toDataURL("image/jpeg", 1.0);
+//       pdf.text(this.eventname+'     '+this.username+'     Back     '+this.product.name+'     '+this.pColor+'     '+this.productSize, 5, 15);
+//       pdf.addImage(imgData, 'JPEG', 80, 80, this.canvasBack.width, this.canvasBack.height);
+      
+//     }
+//     else if(this.printLocation == 'front_only'){
+//         var imgData = this.canvas.toDataURL("image/jpeg", 1.0);
+//         pdf.text(this.eventname+'     '+this.username+'     Front     '+this.product.name+'     '+this.pColor+'     '+this.productSize, 5,15);
+//         pdf.addImage(imgData, 'JPEG', 80, 80, this.canvas.width, this.canvas.height);
+      
+//     }else if(this.printLocation == 'both'){
+     
+//       const img1 = this.canvas.toDataURL({ multiplier: 4 });
+//       const img2  = this.canvasBack.toDataURL({ multiplier: 4 });
+//       pdf.text(this.eventname+'     '+this.username+'     Front     '+this.product.name+'     '+this.pColor+'     '+this.productSize,3,15);
+//       //pdf.addImage(img1, "JPEG", 0, 0, data.pagewidth, data.pageheight);
+//       pdf.addImage(img1, 'JPEG', 0, 20, this.front_canvas_actual_width, this.front_canvas_actual_height);
+//       pdf.addPage();
+//      pdf.text(this.eventname+'     '+this.username+'     Back     '+this.product.name+'     '+this.pColor+'     '+this.productSize, 3, 15);
+//       //pdf.addImage(img2, "JPEG",  0, 0, this.prodClr, data.pageheight);
+//      pdf.addImage(img2, 'JPEG', 0, 20, this.back_canvas_actual_width, this.back_canvas_actual_height);
+//     }
+// //     console.log(pdf.getPageInfo);
+// // console.log(pdf.fill);
+//     pdf.save();
+
+    //---------------------Save PDF File-----------------------
+
+    //exit;
+  // return false;
+
 
     var that = this;
-    
-    /*$.each(this.ArworkIMG,function(key,val){
-      if(that.ArworkIMG[key]!=undefined){
-        if(that.size[key] ==undefined){
-          that.size[key] = [];
-          that.size[key].width = 100;
-          that.size[key].height = 100;
-        }
-        
-        that.print.front.width.push(that.size[key].width);
-        that.print.front.height.push(that.size[key].height);
-        that.print.front.image.push(that.ArworkIMG[key]);
-        that.print.front.left.push(that.relativeX[key]);
-        that.print.front.top.push(that.relativeY[key]);
-        that.print.front.rotate.push(that.state[key]);
-        that.print.front.zindex.push(that.reswitch[key]);
-      }
-    });
-
-    if(this.text1X!=''){
-      that.print.front.text1 = {text: this.text1,left:this.text1X,width:this.text1width,top:this.text1Y,size:this.text1Size,color:this.text1Color,family:this.textFamily,spacing:this.textSpacing,weight:this.textweight};
-    }
-    if(this.text2X!=''){
-      that.print.front.text2 = {text: this.text2,left:this.text2X,width:this.text2width,top:this.text2Y,size:this.text2Size,color:this.text2Color,family:this.textFamily2,spacing:this.textSpacing2,weight:this.textweight2};
-    }
-
-    if(this.text1XBack!=''){
-      that.print.back.text1 = {text: this.text1Back,left:this.text1XBack,width:this.text1widthBack,top:this.text1YBack,size:this.text1SizeBack,color:this.text1ColorBack,family:this.textFamilyBack,spacing:this.textSpacingBack,weight:this.textweightBack};
-    }
-    if(this.text2XBack!=''){
-      that.print.back.text2 = {text: this.text2Back,left:this.text2XBack,width:this.text2widthBack,top:this.text2YBack,size:this.text2SizeBack,color:this.text2ColorBack,family:this.textFamily2Back,spacing:this.textSpacing2Back,weight:this.textweight2Back};
-    }
-
-    $.each(this.ArworkIMGBack,function(key,val){
-      if(that.ArworkIMGBack[key]!=undefined){
-        if(that.sizeBack[key] ==undefined){
-          that.sizeBack[key] = [];
-          that.sizeBack[key].width = 150;
-          that.sizeBack[key].height = 150;
-        }
-        
-        that.print.back.width.push(that.sizeBack[key].width);
-        that.print.back.height.push(that.sizeBack[key].height);
-        that.print.back.image.push(that.ArworkIMGBack[key]);
-        that.print.back.left.push(that.relativeXBack[key]);
-        that.print.back.top.push(that.relativeYBack[key]);
-        that.print.back.rotate.push(that.stateBack[key]);
-        that.print.back.zindex.push(that.reswitchBack[key]);
-      } 
-    });*/
-
-    //console.log(this.canvas.toDataURL({ multiplier: 4 }));
-    
-    //console.log('data:image/svg+xml;utf8,' + encodeURIComponent(this.canvas.toSVG()));
     var getelementtop = <HTMLInputElement>document.getElementById('fcanvastop');
     var getelementleft = <HTMLInputElement>document.getElementById('fcanvasleft');
     var getelementtopb = <HTMLInputElement>document.getElementById('bcanvastop');
@@ -1978,10 +1853,6 @@ bcanvaszooming.addEventListener("wheel", function(optb: any) {
     this.print['canvas_back_width'] = this.bCanvasWidth;
     this.print['canvas_back_height'] = this.bCanvasWidth;
     
-    
-    
-    
-   
 
     if(getelementtopb.value != ''){
     
@@ -2026,20 +1897,108 @@ bcanvaszooming.addEventListener("wheel", function(optb: any) {
     }else{
       this.print['height_pos_front'] = "0px";
     }
-    
-    
-    
-    
+    if(this.prodClr.length == 2){
+      if(this.prodClr[0].front_canvas_height == 0){
+        this.back_canvas_actual_height = this.prodClr[0].back_canvas_height*28.346;
+        this.back_canvas_actual_width = this.prodClr[0].back_canvas_width*28.346;
+      }else{
+        this.front_canvas_actual_height = this.prodClr[0].front_canvas_height*28.346;
+        this.front_canvas_actual_width = this.prodClr[0].front_canvas_width*28.346;
+      }
+      if(this.prodClr[1].front_canvas_width == 0){
+        this.back_canvas_actual_height = this.prodClr[1].back_canvas_height*28.346;
+        this.back_canvas_actual_width = this.prodClr[1].back_canvas_width*28.346;
+      }else{
+        this.front_canvas_actual_height = this.prodClr[1].front_canvas_height;
+        this.front_canvas_actual_width = this.prodClr[1].front_canvas_width;
+      }
+    }else{
+      if(this.prodClr[0].front_canvas_height == 0){
+        this.back_canvas_actual_height = this.prodClr[0].back_canvas_height*28.346;
+        this.back_canvas_actual_width = this.prodClr[0].back_canvas_width*28.346;
+      }else{
+        this.front_canvas_actual_height = this.prodClr[0].front_canvas_height*28.346;
+        this.front_canvas_actual_width = this.prodClr[0].front_canvas_width*28.346;
+      }
 
+    }
+    
+    
 console.log(this.print);
     //@ViewChild('mymodal', { static: false,read: ElementRef }) mymodal!: ElementRef;
     this.http.post(this.url+'create-print-prop',this.print).subscribe((data:any)=>{
       if(data.flag){
-        this.modalService.dismissAll();
-        var productIDSZ = this.productID + '__' + this.productSize + '__' + this.pColor;
-        // this.router.navigate(['/confirm-order/'+this.evID+'/'+this.userID+'/'+productIDSZ+'/'+this.route.snapshot.params.client]);
-        //this.router.navigate(['/preview/'+this.evID+'/'+this.userID+'/'+productIDSZ+'/'+this.route.snapshot.params.client]);
-        this.router.navigate(['/thank-you/'+this.evID+'/'+this.userID+'_'+data.eventType]);
+console.log(data);
+
+        //--------PDF--------------------
+        
+
+        var pdf = new jsPDF({
+          orientation: data.orientation, // landscape
+          unit: 'pt', // points, pixels won't work properly
+          // format: [792, 612] // set needed dimensions for any element 612(21.59)*792(27.94)
+          format: [data.pageheight,data.pagewidth] // set needed dimensions for any element 612(21.59)*792(27.94) 
+          // pageheight: 1008.182182 = 35.56
+          // pagewidth: 611.99014 = 21.58
+          
+        }); 
+        if(this.printLocation == 'back_only'){
+          var imgData = this.canvasBack.toDataURL("image/jpeg", 1.0);
+          pdf.text(this.eventname+'     '+this.username+'     Back     '+this.product.name+'     '+this.pColor+'     '+this.productSize, 3, 15);
+          pdf.addImage(imgData, 'JPEG', 0, 20, this.back_canvas_actual_width, this.back_canvas_actual_height);
+          
+        }
+        else if(this.printLocation == 'front_only'){
+            var imgData = this.canvas.toDataURL("image/jpeg", 1.0);
+            pdf.text(this.eventname+'     '+this.username+'     Front     '+this.product.name+'     '+this.pColor+'     '+this.productSize, 3,15);
+            pdf.addImage(imgData, 'JPEG', 0, 20, this.front_canvas_actual_width, this.front_canvas_actual_height);
+          
+        }else if(this.printLocation == 'both'){
+          //console.log(this.back_canvas_actual_width+' '+this.back_canvas_actual_height+' '+this.front_canvas_actual_width+' '+this.front_canvas_actual_height);
+          const img1 = this.canvas.toDataURL({ multiplier: 4 });
+          const img2  = this.canvasBack.toDataURL({ multiplier: 4 });
+          pdf.text(this.eventname+'     '+this.username+'     Front     '+this.product.name+'     '+this.pColor+'     '+this.productSize, 3,15);
+          //pdf.addImage(img1, "JPEG", 0, 0, data.pagewidth, data.pageheight);
+          pdf.addImage(img1, 'JPEG', 0, 20, this.front_canvas_actual_width, this.front_canvas_actual_height);
+          pdf.addPage();
+         pdf.text(this.eventname+'     '+this.username+'     Back     '+this.product.name+'     '+this.pColor+'     '+this.productSize, 3, 15);
+          //pdf.addImage(img2, "JPEG",  0, 0, this.prodClr, data.pageheight);
+          pdf.addImage(img2, 'JPEG', 0, 20, this.back_canvas_actual_width, this.back_canvas_actual_height);
+        }
+console.log(pdf.getPageInfo);
+console.log(pdf.fill);
+            //---------------------Save PDF File-----------------------
+
+            var blob = pdf.output('blob');
+            var formData = new FormData();
+            formData.append('pdf', blob);
+            formData.append('filename',data.pdffilename);
+            formData.append('orderid',data.orderid);
+              
+
+            // ------------------------------------------
+            this.http.post(this.url+'save-pdf',formData).subscribe((data:any)=>{
+              if(data.flag){
+                this.modalService.dismissAll();
+                var productIDSZ = this.productID + '__' + this.productSize + '__' + this.pColor;
+                // this.router.navigate(['/confirm-order/'+this.evID+'/'+this.userID+'/'+productIDSZ+'/'+this.route.snapshot.params.client]);
+                //this.router.navigate(['/preview/'+this.evID+'/'+this.userID+'/'+productIDSZ+'/'+this.route.snapshot.params.client]);
+                this.router.navigate(['/thank-you/'+this.evID+'/'+this.userID+'_'+data.eventType]);
+              }
+            },(error)=>{
+              console.log('failure');
+              console.log(error);
+              return false;
+
+            });
+
+
+            //-------------End Save PDF File----------------------------
+            //pdf.save("download.pdf");
+
+
+            //-------End PDF------------------
+        
       }
     },(error:any)=>{ console.log(error) });
 

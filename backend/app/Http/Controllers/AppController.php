@@ -86,7 +86,7 @@ class AppController extends Controller
         return response()->json(['ev_type'=>array_filter($evType),'ap_type'=>array_filter($apType),'executive'=>$executive,'flag'=>TRUE],200);
     }
 
-    public function create_event(Request $request){
+     public function create_event(Request $request){
 
         $jsonData = $request->data;
         $event = new Event;
@@ -95,6 +95,8 @@ class AppController extends Controller
         $event->app_name = $jsonData['app_name'];
         $event->start_datetime = date('Y-m-d H:i:s',strtotime($jsonData['start_date']));
         $event->end_datetime = date('Y-m-d H:i:s',strtotime($jsonData["end_date"]));
+        $event->pagewidth = $jsonData['pagewidth'];
+        $event->pageheight = $jsonData['pageheight'];
         $event->orientation = $jsonData['orientation'];
         $event->event_place = $jsonData['location'];
         $event->client = $jsonData['client'];
@@ -131,7 +133,7 @@ class AppController extends Controller
           $mail->SetFrom("nilesh.vishwakarma@nectarinfotel.com", "Nilesh");
           $mail->AddReplyTo("nilesh.vishwakarma@nectarinfotel.com", "Nilesh");
           $mail->Subject = "Family Printing Event Created";
-          $content = "Hello, <br/><br/> Greetings! You have been invited for the event.<b>Please, <a href='http://fpuat.nectarinfotel.com/#/home/".Crypt::encryptString($eventExe->event_id)."/".Crypt::encryptString($jsonData['exec'])."'>Click here </a> to visit.<br/><br/> Thank You. </b>";
+          $content = "Hello, <br/><br/> Greetings! You have been invited for the event.<b>Please, <a href='http://localhost:4200/home/".Crypt::encryptString($eventExe->event_id)."/".Crypt::encryptString($jsonData['exec'])."'>Click here </a> to visit.<br/><br/> Thank You. </b>";
           $mail->MsgHTML($content); 
           $mail->Send();
 
@@ -153,6 +155,8 @@ class AppController extends Controller
         $event->end_datetime = date('Y-m-d H:i:s',strtotime($jsonData["end_date"]));
         $event->orientation = $jsonData['orientation'];
         $event->event_place = $jsonData['location'];
+        $event->pagewidth = $jsonData['pagewidth'];
+        $event->pageheight = $jsonData['pageheight'];
         $event->client = $jsonData['client'];
        // $event->store_id = $jsonData['stores'];
         $event->order_prefix = $jsonData['order_prefix'];
@@ -932,11 +936,20 @@ class AppController extends Controller
                     $productClr->color_name = !empty($colors)? $colors[$i]->color_name:'';
                     $productClr->back_canvas_width = !empty($colors)? $colors[$i]->back_width:'';
                     $productClr->back_canvas_height = !empty($colors)? $colors[$i]->back_height:'';
-                    $productClr->resize_back_width = !empty($colors)? $backcanvassize[$i]->width:'';
-                    $productClr->resize_back_height = !empty($colors)? $backcanvassize[$i]->height:'';
-                    $productClr->back_canvas_left = !empty($colors)? $backcanvassize[$i]->left:'';
-                    $productClr->back_canvas_top = !empty($colors)? $backcanvassize[$i]->top:'';
-                    $productClr->back_canvas_transform = !empty($colors)? $backcanvassize[$i]->transform:'';
+                    if(!empty($backcanvassize)){
+                      $productClr->resize_back_width = !empty($backcanvassize[$i]->width)? $backcanvassize[$i]->width:'';
+                      $productClr->resize_back_height = !empty($backcanvassize[$i]->height)? $backcanvassize[$i]->height:'';
+                      $productClr->back_canvas_left = !empty($backcanvassize[$i]->left)? $backcanvassize[$i]->left:'';
+                      $productClr->back_canvas_top = !empty($backcanvassize[$i]->top)? $backcanvassize[$i]->top:'';
+                      $productClr->back_canvas_transform = !empty($backcanvassize[$i]->transform)? $backcanvassize[$i]->transform:'';
+                    }else{
+                      $productClr->resize_back_width = 0;
+                      $productClr->resize_back_height = 0;
+                      $productClr->back_canvas_left = 0;
+                      $productClr->back_canvas_top = 0;
+                      $productClr->back_canvas_transform = 0;
+                    }
+                    
                     $productClr->save();
               }
 
@@ -2126,7 +2139,7 @@ class AppController extends Controller
         default: $orderBy = 'fp_orders.created_date'; $columnSortOrder="DESC"; break;
       }
 
-      $orders = Orders::select('fp_orders.order_id','fp_orders.status','fp_orders.created_date','rg.first_name','rg.last_name','rg.email','fp_orders.reciept_id','fp_orders.product_color','ev.app_name','pd.name AS product_name','ev.event_id','pd.product_id','rg.reg_id')
+      $orders = Orders::select('fp_orders.order_id','fp_orders.pdf_file_name','fp_orders.status','fp_orders.created_date','rg.first_name','rg.last_name','rg.email','fp_orders.reciept_id','fp_orders.product_color','ev.app_name','pd.name AS product_name','ev.event_id','pd.product_id','rg.reg_id')
                 ->leftJoin('fp_registration AS rg','rg.reg_id','=','fp_orders.client_id')
                 ->leftJoin('fp_event AS ev','ev.event_id','=','fp_orders.event_id')
                 ->leftJoin('fp_product AS pd','pd.product_id','=','fp_orders.product_id')
@@ -2173,13 +2186,16 @@ class AppController extends Controller
       PDF::loadView('view.pdf', $data, [], [
         'format' => 'A5-L'
       ])->save('/uploads');*/
+      
+
+      //$customPaper = array(0,0,567.0,283.46);
       $orders = array();
       $data = array('order'=>array(),'reciept_id'=>'new-order');
       if($request->order){
 
         DB::connection()->enableQueryLog();
 
-        $orders = Orders::select('fp_orders.reciept_id','fp_orders.created_date','rg.first_name','rg.last_name','rg.email','fp_orders.product_color','fp_orders.product_size','ev.app_name','pr.svg','pr.png','pr.view','pd.name as product_name','pc.color_name')
+        $orders = Orders::select('fp_orders.reciept_id','fp_orders.created_date','rg.first_name','rg.last_name','rg.email','fp_orders.product_color','fp_orders.product_size','ev.app_name','pr.svg','pr.png','pr.view','pd.name as product_name','pc.color_name','pc.front_canvas_width','pc.front_canvas_height','pc.back_canvas_width','pc.back_canvas_height','fpd.print_location')
 
                 ->join('fp_print_prop AS pr', function ($join) {
                     $join->on('pr.event_id', '=', 'fp_orders.event_id');
@@ -2195,15 +2211,170 @@ class AppController extends Controller
                 ->leftJoin('fp_registration AS rg','rg.reg_id','=','fp_orders.client_id')
                 ->leftJoin('fp_product AS pd','pd.product_id','=','fp_orders.product_id')
                 ->leftJoin('fp_event AS ev','ev.event_id','=','fp_orders.event_id')
+               
+                
+                ->leftJoin('fp_product_design AS fpd',function ($join) {
+                  $join->on('fpd.product_id', '=', 'fp_orders.product_id');
+                  $join->on('fpd.event_id', '=', 'fp_orders.event_id');
+              })
+
                 ->where([
                         ['fp_orders.order_id','=',$request->order],
                         ['fp_orders.is_active','=',1]
                        ])
                 ->groupBy('pr.view')
                 ->get();
+
+                // ------------------------------------------------------------------
+                $canvasdimention = Orders::select('fp_orders.reciept_id','pc.front_canvas_width','pc.front_canvas_height','pc.back_canvas_width','pc.back_canvas_height','pc.resize_front_width','pc.resize_front_height','pc.resize_back_width','pc.resize_back_height')
+
+                ->leftJoin('fp_product_colors AS pc',function ($join) {
+                    $join->on('pc.product_id', '=', 'fp_orders.product_id');
+                    $join->on('pc.color', '=', 'fp_orders.product_color');
+                })
+                ->where([
+                        ['fp_orders.order_id','=',$request->order],
+                        ['fp_orders.is_active','=',1]
+                       ])
+                ->get();
+                // ------------------------------------------------------------------
+          
+                //   \DB::enableQueryLog(); // Enable query log
+                 //dd(\DB::getQueryLog()); // Show results of log   
+                  //   echo '<pre>';
+                  //  // print_r($data['order'] );
+                  //   print_r($productDesign);
+                   //exit();
           if($orders->count()>0){
             $data['order'] = $orders->toArray();
             $data['reciept_id']=$data['order'][0]['reciept_id'];
+            $canvasdimentionArr = $canvasdimention->toArray();
+            $data['canvasdimention'] = $canvasdimentionArr;
+            // ----------------------------------------------------
+            $front_can_width = 0 ;
+            $front_can_height = 0 ;
+            $back_can_width = 0 ;
+            $back_can_height = 0 ; 
+            $resize_front_width = 0;
+            $resize_front_height = 0;
+            $resize_back_width = 0;
+            $resize_back_height = 0;
+
+            if($canvasdimention->count() > 0){
+            if($canvasdimention->count() == 1){
+                $front_can_width =  $canvasdimentionArr[0]['front_canvas_width'];
+                $front_can_height = $canvasdimentionArr[0]['front_canvas_height'];
+                $back_can_width = $canvasdimentionArr[0]['back_canvas_width'];
+                $back_can_height = $canvasdimentionArr[0]['back_canvas_height'];
+                $resize_front_width = $canvasdimentionArr[0]['resize_front_width'];
+                $resize_front_height = $canvasdimentionArr[0]['resize_front_height'];
+                $resize_back_width = $canvasdimentionArr[0]['resize_back_width'];
+                $resize_back_height = $canvasdimentionArr[0]['resize_back_height'];
+              
+            }else{
+              if($canvasdimentionArr[0]['front_canvas_width'] != 0){
+                $front_can_width = $canvasdimentionArr[0]['front_canvas_width'];
+                $front_can_height = $canvasdimentionArr[0]['front_canvas_height'];
+                
+              }else{
+                $front_can_width = $canvasdimentionArr[1]['front_canvas_width'];
+                $front_can_height = $canvasdimentionArr[1]['front_canvas_height'];
+              }
+  
+              if($canvasdimentionArr[0]['back_canvas_width'] != 0){
+                $back_can_width = $canvasdimentionArr[0]['back_canvas_width'];
+                $back_can_height = $canvasdimentionArr[0]['back_canvas_height'];
+              }else{
+                $back_can_width = $canvasdimentionArr[1]['back_canvas_width'];
+                $back_can_height = $canvasdimentionArr[1]['back_canvas_height'];
+              }
+
+              if($canvasdimentionArr[0]['resize_front_width'] != 0){
+                $resize_front_width = $canvasdimentionArr[0]['resize_front_width'];
+                $resize_front_height = $canvasdimentionArr[0]['resize_front_height'];
+              }else{
+                $resize_front_width = $canvasdimentionArr[1]['resize_front_width'];
+                $resize_front_height = $canvasdimentionArr[1]['resize_front_height'];
+              }
+
+              if($canvasdimentionArr[0]['resize_back_width'] != 0){
+                $resize_back_width = $canvasdimentionArr[0]['resize_back_width'];
+                $resize_back_height = $canvasdimentionArr[0]['resize_back_height'];
+              }else{
+                $resize_back_width = $canvasdimentionArr[1]['resize_back_width'];
+                $resize_back_height = $canvasdimentionArr[1]['resize_back_height'];
+              }
+            }
+            
+          }
+         // echo $resize_back_height.' ';
+            $front_can_width = $front_can_width+15 ;
+            $front_can_height = $front_can_height+15 ;
+            $back_can_width = $back_can_width+15 ;
+            $back_can_height = $back_can_height+15 ; 
+            //$resize_front_width = $resize_front_width+25;
+            $resize_front_height = $resize_front_height+5;
+           // $resize_back_width = $resize_back_width+25;
+            $resize_back_height = $resize_back_height+5;
+           // echo $resize_back_height;
+           // exit;
+            // 1 inch = 72 point
+            // 1 inch = 2.54 cm
+            // 1pt = 1.33px
+            // 10 cm = 10/2.54*72 = 283.464566929
+            // 20 cm = 20/2.54*72 = 566.929133858
+            //---------------------------------------------------------
+            // $pxtocmfw = $front_can_width*0.0264583333; // 1px = 0.0264583333 cm
+            // $pxtocmfh = $front_can_height*0.0264583333;
+
+            // $pxtocmbw = $back_can_width*0.0264583333;
+            // $pxtocmbh = $back_can_height*0.0264583333;
+
+            // $fw = $pxtocmfw/2.54*300;
+            // $fh = $pxtocmfh/2.54*300;
+
+            // $bw = $pxtocmbw/2.54*300;
+            // $bh = $pxtocmbh/2.54*300;
+
+            // if($fw > $bw){
+            //   $finalw = $fw;
+            // }else{
+            //   $finalw = $bw;
+            // }
+
+            // if($fh > $bh){
+            //   $finalh = $fh;
+            // }else{
+            //   $finalh = $bh;
+            // }
+            // $customPaper = array(0,0,$finalh,$finalw);
+            //--------------------------------------------------------------
+            $pxtocmfw = $resize_front_width*0.0264583333; // 1px = 0.0264583333 cm
+            $pxtocmfh = $resize_front_height*0.0264583333;
+
+            $pxtocmbw = $resize_back_width*0.0264583333;
+            $pxtocmbh = $resize_back_height*0.0264583333;
+
+            $fw = $pxtocmfw/2.54*300;
+            $fh = $pxtocmfh/2.54*300;
+
+            $bw = $pxtocmbw/2.54*300;
+            $bh = $pxtocmbh/2.54*300;
+
+            if($fw > $bw){
+              $finalw = $fw;
+            }else{
+              $finalw = $bw;
+            }
+
+            if($fh > $bh){
+              $finalh = $fh;
+            }else{
+              $finalh = $bh;
+            }
+            $customPaper = array(0,0,$finalh,$finalw);
+            //---------------------------------------------------------------
+           // $data['productDesign'] = $productDesign;
            /* foreach($data['order'] as $rows){
              \File::put('uploads/test.svg',$rows['svg']);
               $image = new \Imagick();
@@ -2213,11 +2384,37 @@ class AppController extends Controller
               $image->writeImage('uploads/test.png');
             }*/
           }
-          //var_dump($data['order']);exit();
+          
+          //var_dump($data['order']);
+         // echo '<pre>';
+         //print_r($data);
+//exit();
       }
-      $pdf = PDF::loadView('pdf.index-pdf', $data);
-      /*$pdf->SetHTMLHeader('<h1>Nilesh</h1>');*/
-      return $pdf->download($data['reciept_id'].'.pdf');
+
+      if($orders->count()>0){
+        // echo '<pre>';
+        // print_r($customPaper);
+        // exit;
+        $pdf = PDF::loadView('pdf.index-pdf', $data)->setPaper($customPaper, 'landscape');
+        //print_r($pdf);
+        //  exit;
+      //$pdf = PDF::loadView('pdf.index-pdf', $data)->setPaper('B6', 'landscape');
+        return $pdf->download($data['reciept_id'].'.pdf');
+        //return view('pdf.index-pdf',$data);
+      }else{
+        // echo '<pre>';
+        // print_r('A4');
+        // exit;
+        $pdf = PDF::loadView('pdf.index-pdf', $data)->setPaper('A4', 'landscape');
+        //pdf = PDF::loadView('pdf.retourlabel', compact('retour','barcode'))->setPaper($customPaper, 'landscape');
+        /*$pdf->SetHTMLHeader('<h1>Nilesh</h1>');*/
+        return $pdf->download($data['reciept_id'].'.pdf');
+      }
+      //$pdf = PDF::loadView('pdf.index-pdf', $data);
+      //   //pdf = PDF::loadView('pdf.retourlabel', compact('retour','barcode'))->setPaper($customPaper, 'landscape');
+      //   /*$pdf->SetHTMLHeader('<h1>Nilesh</h1>');*/
+         return $pdf->download($data['reciept_id'].'.pdf');
+     
     }
 
     public function get_stores(){

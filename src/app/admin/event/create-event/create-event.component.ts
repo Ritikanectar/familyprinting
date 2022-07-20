@@ -62,6 +62,8 @@ export class CreateEventComponent implements OnInit {
       order_prefix: ['', Validators.required],
       start_date: ['', Validators.required],
       end_date: ['', [Validators.required]],
+      pagewidth: ['', Validators.required],
+      pageheight: ['', [Validators.required]],
       orientation: ['', [Validators.required]],
       location: ['', [Validators.required]],
       exec: ['', Validators.required],

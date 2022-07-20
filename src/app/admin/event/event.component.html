@@ -200,7 +200,26 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                     </div>
                   </div>
                 </div>
-
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="d-block">Page Width</label>
+                      <input type="number" class="form-control" formControlName="pagewidth" value="{{event.pagewidth}}"  placeholder="Page Width" [ngClass]="{ 'is-invalid': submitted && f.pagewidth.errors }">
+                      <div *ngIf="submitted && f.pagewidth.errors" class="invalid-feedback">
+                        <div *ngIf="f.pagewidth.errors.required">Page Width is required</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="d-block">Page Height</label>
+                      <input type="number" class="form-control" formControlName="pageheight" placeholder="Page Height" value="{{event.pageheight}}" [ngClass]="{ 'is-invalid': submitted && f.pageheight.errors }">
+                      <div *ngIf="submitted && f.pageheight.errors" class="invalid-feedback">
+                        <div *ngIf="f.pageheight.errors.required">Page Height is required</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div class="row">
                   <div class="col-12 form-group">
                     <label class="d-block">Orientation</label>
